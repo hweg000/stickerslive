@@ -48,5 +48,17 @@
   "exportSuccessBundle": "تم حفظ الحزمة. ملاحظة: تحتوي على الصورة والصوت كملفين منفصلين؛ قد يعامل واتساب الصورة كملصق عادي.",
   "close": "إغلاق",
   "shareReadyToast": "الفيديو جاهز. اضغط على \"مشاركة\" لإرساله إلى واتساب أو حفظه في الصور.",
-  "videoSilentToast": "هذا الفيديو بلا صوت (أو تعذرت قراءته). يمكنك اختيار صوت من زر الصوت."
+  "videoSilentToast": "هذا الفيديو بلا صوت (أو تعذرت قراءته). يمكنك اختيار صوت من زر الصوت.",
+  "browseSoundsBtn": "🔎 MyInstants",
+  "browseTitle": "MyInstants sounds",
+  "browseSearchPlaceholder": "Search sounds… (empty = trending)",
+  "browseUse": "Use",
+  "browseEmpty": "No sounds found.",
+  "browseMore": "Load more",
+  "browseError": "Could not load MyInstants. Check your connection.",
+  "browseGifsBtn": "🔎 Search GIF",
+  "gifBrowserTitle": "Tenor GIFs",
+  "gifSearchPlaceholder": "Search GIFs… (empty = memes)",
+  "gifEmpty": "No GIFs found.",
+  "gifError": "Could not load Tenor. Check your connection."
 }

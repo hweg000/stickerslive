@@ -1,12 +1,54 @@
 :root {
   color-scheme: dark;
-  --bg: #111318;
-  --surface: #1b1f27;
-  --border: #2c3340;
-  --text: #f3f5f8;
-  --muted: #98a2b3;
-  --accent: #25d366;
+  --bg: #13111a;
+  --surface: #1d1a27;
+  --border: #322c44;
+  --text: #f5f3fa;
+  --muted: #a49cb8;
+  --accent: #a78bfa;
+  --accent-grad: linear-gradient(135deg, #c4b5fd 0%, #8b5cf6 100%);
+  --accent-glow: 0 4px 16px rgba(139, 92, 246, 0.45);
+  --surface-hover: #282338;
   --danger: #ef4444;
+}
+
+button {
+  font-family: inherit;
+  transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease,
+    box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+button:not(:disabled):active {
+  transform: scale(0.94);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.stik-spin {
+  display: inline-flex;
+  animation: stik-spin 0.8s linear infinite;
+}
+
+@keyframes stik-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button,
+  .stik-spin {
+    transition: none;
+    animation: none;
+  }
 }
 
 * {
@@ -58,8 +100,8 @@ textarea {
 }
 
 .stik-corner-btn {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--surface);
@@ -72,19 +114,30 @@ textarea {
   justify-content: center;
 }
 
+.stik-corner-btn:not(:disabled):hover {
+  background: var(--surface-hover);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
 .stik-reset-btn:hover {
-  border-color: var(--danger);
+  border-color: var(--danger) !important;
   color: var(--danger);
 }
 
 .stik-ok-btn.ready {
-  background: var(--accent);
-  color: #08180e;
-  border-color: var(--accent);
+  background: var(--accent-grad);
+  color: #1a1033;
+  border-color: transparent;
+  box-shadow: var(--accent-glow);
+}
+
+.stik-ok-btn.ready:hover {
+  border-color: transparent;
+  box-shadow: 0 6px 22px rgba(139, 92, 246, 0.6);
 }
 
 .stik-download-btn.ready:hover {
-  border-color: var(--accent);
   color: var(--accent);
 }
 
@@ -117,9 +170,14 @@ textarea {
   cursor: pointer;
 }
 
+.stik-trans-chip:hover {
+  border-color: var(--accent);
+}
+
 .stik-trans-chip.active {
   border-color: var(--accent);
   color: var(--accent);
+  background: rgba(167, 139, 250, 0.12);
 }
 
 .stik-color-chip input {
@@ -159,10 +217,11 @@ textarea {
   justify-content: center;
 }
 
-.stik-pill-accent {
-  background: var(--accent);
-  color: #08180e;
+.stik-pill-btn.stik-pill-accent {
+  background: var(--accent-grad);
+  color: #1a1033;
   font-weight: 700;
+  box-shadow: var(--accent-glow);
 }
 
 .stik-sticker-stage {
@@ -176,12 +235,12 @@ textarea {
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  background-color: #1c2028;
+  background-color: #1c1a24;
   background-image:
-    linear-gradient(45deg, #242934 25%, transparent 25%),
-    linear-gradient(-45deg, #242934 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #242934 75%),
-    linear-gradient(-45deg, transparent 75%, #242934 75%);
+    linear-gradient(45deg, #262230 25%, transparent 25%),
+    linear-gradient(-45deg, #262230 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #262230 75%),
+    linear-gradient(-45deg, transparent 75%, #262230 75%);
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0;
 }
@@ -220,10 +279,17 @@ textarea {
   color: var(--muted);
 }
 
+.stik-sticker-stage.has-sticker {
+  /* lets the preview size itself to the stage (cqw/cqh) instead of a fixed 240px */
+  container-type: size;
+}
+
 .stik-preview-box {
   position: relative;
   width: 240px;
   height: 240px;
+  width: min(94cqw, 94cqh);
+  height: min(94cqw, 94cqh);
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
@@ -269,8 +335,115 @@ textarea {
 
 .stik-audio-empty-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+}
+
+.stik-browse-btn {
+  flex-basis: 100%;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.stik-sound-browser {
+  max-width: 440px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stik-sound-browser-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stik-sound-browser-head h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.stik-sound-search {
+  width: 100%;
+}
+
+.stik-sound-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+
+.stik-sound-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.stik-sound-item:hover {
+  border-color: var(--accent);
+}
+
+.stik-sound-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.stik-gif-btn {
+  margin-top: 12px;
+}
+
+.stik-gif-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.stik-gif-item {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg);
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+}
+
+.stik-gif-item:hover {
+  border-color: var(--accent);
+  transform: scale(1.03);
+}
+
+.stik-gif-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.stik-sound-status {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0;
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
 }
 
 .stik-url-input {
@@ -287,10 +460,25 @@ textarea {
   background: var(--border);
   color: var(--text);
   border: none;
-  border-radius: 8px;
-  padding: 8px 12px;
+  border-radius: 999px;
+  padding: 8px 14px;
   font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.stik-pill-btn:not(:disabled):hover {
+  background: var(--surface-hover);
+  transform: translateY(-1px);
+}
+
+.stik-pill-btn.stik-pill-accent:not(:disabled):hover {
+  background: var(--accent-grad);
+  box-shadow: 0 6px 22px rgba(139, 92, 246, 0.6);
 }
 
 .stik-pill-btn.stik-pill-wide {
@@ -307,14 +495,22 @@ textarea {
 }
 
 .stik-play-btn {
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   border: none;
-  background: var(--accent);
-  color: #08180e;
+  background: var(--accent-grad);
+  color: #1a1033;
   font-weight: 700;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--accent-glow);
+}
+
+.stik-play-btn:hover {
+  transform: scale(1.08);
 }
 
 .stik-waveform-track {
@@ -339,7 +535,7 @@ textarea {
 
 .stik-waveform-bar {
   flex: 1;
-  background: #4b5563;
+  background: #4c4566;
   border-radius: 2px;
 }
 
@@ -347,7 +543,7 @@ textarea {
   position: absolute;
   top: 0;
   bottom: 0;
-  background: rgba(37, 211, 102, 0.22);
+  background: rgba(167, 139, 250, 0.22);
   border-left: 2px solid var(--accent);
   border-right: 2px solid var(--accent);
   pointer-events: none;
@@ -387,9 +583,13 @@ textarea {
   cursor: pointer;
 }
 
+.stik-duration-switch-btn:not(.active):not(:disabled):hover {
+  color: var(--text);
+}
+
 .stik-duration-switch-btn.active {
-  background: var(--accent);
-  color: #08180e;
+  background: var(--accent-grad);
+  color: #1a1033;
 }
 
 .stik-duration-switch-btn:disabled {
@@ -409,8 +609,8 @@ textarea {
 }
 
 .stik-toast.success {
-  background: rgba(37, 211, 102, 0.16);
-  color: #bbf7d0;
+  background: rgba(167, 139, 250, 0.16);
+  color: #ddd6fe;
 }
 
 .stik-popover {
@@ -480,6 +680,11 @@ textarea {
   cursor: pointer;
 }
 
+.stik-popover-actions button:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
 .stik-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -501,19 +706,8 @@ textarea {
   font-size: 13px;
 }
 
-.stik-copyright-footer {
-  text-align: center;
-  font-size: 10px;
-  line-height: 1.2;
-  color: var(--muted);
-  opacity: 0.78;
-  padding-top: 2px;
-  flex-shrink: 0;
-}
-
-.stik-copyright-footer a,
 .stik-about-modal a {
-  color: #60a5fa;
+  color: var(--accent);
   text-decoration: underline;
 }
 
@@ -593,13 +787,6 @@ textarea {
 .stik-about-licenses p {
   margin: 6px 0 2px;
   line-height: 1.4;
-}
-
-.stik-about-footer {
-  margin: 4px 0 2px;
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.35;
 }
 
 .stik-about-close {

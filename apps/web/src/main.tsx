@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { detectLocale, type ExportArtifact, type LocaleCode } from "@stiksound/core";
 import { WebMediaEngine } from "@stiksound/media-web";
+import { MyInstantsProvider, TenorGifSource, type FetchLike } from "@stiksound/providers";
 import {
   StikSoundMinimalApp,
   type ShareOutcome,
@@ -15,14 +16,27 @@ import "./mobile.css";
  * StikSound web / PWA shell, aimed at iPhone Safari ("Add to Home Screen").
  *
  * Differences from the Chrome extension shell:
- * - No MyInstants links: a plain web page cannot read myinstants.com (no CORS headers),
- *   and routing it through a proxy would break the "nothing leaves your device" promise.
+ * - MyInstants goes through the Vite dev proxy at /mi (see vite.config.ts), since
+ *   myinstants.com sends no CORS headers. Personal/local use only.
  * - Output goes through the system share sheet (WhatsApp, Save Video, Save to Files)
  *   because iOS has no way to put a video file on the clipboard from a web page.
- * - No transparent WebM: Safari cannot encode VP9 with alpha.
+ * - Transparent WebM only where WebCodecs can encode VP9 with alpha (Chrome/Edge desktop, not Safari).
  */
 
 const isTouch = window.matchMedia?.("(pointer: coarse)").matches ?? false;
+
+// The provider validates real https://www.myinstants.com URLs, then we send them to the local proxy.
+const proxiedFetch: FetchLike = (input, init) =>
+  fetch(
+    String(input)
+      .replace(/^https:\/\/(www\.)?myinstants\.com/, "./mi")
+      .replace(/^https:\/\/tenor\.com/, "./tenor"),
+    init
+  );
+const myInstants = new MyInstantsProvider(proxiedFetch);
+const gifSource = new TenorGifSource(proxiedFetch);
+const providers = [myInstants];
+const searchMyInstants = (query: string, page: number) => myInstants.search(query, page);
 
 function toFile(artifact: ExportArtifact): File {
   return new File([artifact.bytes.slice().buffer], artifact.fileName, { type: artifact.mimeType });
@@ -274,17 +288,51 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
 
 const locale: LocaleCode = detectLocale(navigator.language);
 
-createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <StikSoundMinimalApp
-      engine={new WebMediaEngine()}
-      providers={[]}
-      shell={shell}
-      initialLocale={locale}
-      platform={{ transparentVideo: false, myInstantsUrl: false, videoStickers: true }}
-      labelOverrides={webLabels}
-    />
-  </React.StrictMode>
+/**
+ * Offer "Transparent" only where the export really keeps alpha (see web-media-engine.ts):
+ * WebCodecs VP9 with alpha, or Chromium's MediaRecorder, which writes WebM alpha
+ * (Chromium's WebCodecs does not). Safari has neither.
+ */
+async function canEncodeAlphaWebm(): Promise<boolean> {
+  // shortcut: userAgentData only exists in Chromium (Chrome/Edge/Opera); a real probe recording would cost ~1 s at startup.
+  const isChromium = "userAgentData" in navigator;
+  if (isChromium && typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported("video/webm;codecs=vp9")) {
+    return true;
+  }
+  try {
+    if (typeof VideoEncoder === "undefined") return false;
+    const config = {
+      codec: "vp09.00.10.08",
+      width: 512,
+      height: 512,
+      bitrate: 1_200_000,
+      framerate: 24,
+      alpha: "keep"
+    } as VideoEncoderConfig;
+    const support = await VideoEncoder.isConfigSupported(config);
+    // Browsers drop config members they don't understand, so "alpha" must come back.
+    return support.supported === true && (support.config as { alpha?: string } | undefined)?.alpha === "keep";
+  } catch {
+    return false;
+  }
+}
+
+const root = createRoot(document.getElementById("root")!);
+void canEncodeAlphaWebm().then((transparentVideo) =>
+  root.render(
+    <React.StrictMode>
+      <StikSoundMinimalApp
+        engine={new WebMediaEngine()}
+        providers={providers}
+        shell={shell}
+        initialLocale={locale}
+        platform={{ transparentVideo, myInstantsUrl: true, videoStickers: true }}
+        labelOverrides={webLabels}
+        soundSearch={searchMyInstants}
+        gifSource={gifSource}
+      />
+    </React.StrictMode>
+  )
 );
 
 if ("serviceWorker" in navigator && import.meta.env.PROD && window.isSecureContext) {

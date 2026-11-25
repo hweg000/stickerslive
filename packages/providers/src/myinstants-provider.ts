@@ -1,5 +1,5 @@
 import { LIMITS, StikSoundError, type SoundProvider } from "@stiksound/core";
-import { extractMyInstantsFromHtml } from "./myinstants-extractor";
+import { extractMyInstantsFromHtml, extractMyInstantsList, type MyInstantsListItem } from "./myinstants-extractor";
 import { validateMyInstantsUrl } from "./url-policy";
 
 export type FetchLike = typeof fetch;
@@ -59,6 +59,19 @@ export class MyInstantsProvider implements SoundProvider {
       title: extracted.title,
       bytes: audioBytes
     };
+  }
+
+  /**
+   * Lists sounds from MyInstants: search results for `query`, or the trending index when empty.
+   * shortcut: always uses the Spanish site (/es/), add a locale param if other languages are needed.
+   */
+  public async search(query: string, page = 1): Promise<MyInstantsListItem[]> {
+    const q = query.trim();
+    const url = q
+      ? `https://www.myinstants.com/es/search/?name=${encodeURIComponent(q)}&page=${page}`
+      : `https://www.myinstants.com/es/index/es/?page=${page}`;
+    const htmlBytes = await this.fetchLimitedBytes(url, 2 * 1024 * 1024);
+    return extractMyInstantsList(new TextDecoder("utf-8", { fatal: false }).decode(htmlBytes));
   }
 
   private async fetchLimitedBytes(

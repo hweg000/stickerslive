@@ -107,4 +107,31 @@ describe("packages/providers MyInstants & SSRF security", () => {
     expect(resolved.title).toBe("gi steel pipe");
     expect(resolved.bytes).toEqual(mp3Stub);
   });
+
+  it("search() lists sounds from a results page: dedupes, decodes titles, skips off-site media, builds index/search URLs", async () => {
+    const item = (media: string, title: string) =>
+      `<div class="instant"><button class="small-button" onclick="play('${media}', 'loader-1', 'x-1')"></button>` +
+      `<a href="/es/instant/x-1/" class="instant-link link-secondary">${title}</a></div>`;
+    const listHtml =
+      item("/media/sounds/bruh.mp3", "Bruh &amp; co") +
+      item("/media/sounds/bruh.mp3", "Bruh duplicate") +
+      item("/media/sounds/faaah.mp3", "FAAAH") +
+      `<button onclick="play('//evil.example/media/sounds/x.mp3')"></button>`;
+    const requestedUrls: string[] = [];
+    const mockFetch: FetchLike = async (url) => {
+      requestedUrls.push(String(url));
+      return new Response(listHtml, { status: 200 });
+    };
+    const provider = new MyInstantsProvider(mockFetch);
+
+    expect(await provider.search("  bruh moment ", 2)).toEqual([
+      { title: "Bruh & co", media_url: "https://www.myinstants.com/media/sounds/bruh.mp3" },
+      { title: "FAAAH", media_url: "https://www.myinstants.com/media/sounds/faaah.mp3" }
+    ]);
+    await provider.search("");
+    expect(requestedUrls).toEqual([
+      "https://www.myinstants.com/es/search/?name=bruh%20moment&page=2",
+      "https://www.myinstants.com/es/index/es/?page=1"
+    ]);
+  });
 });

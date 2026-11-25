@@ -48,5 +48,17 @@
   "exportSuccessBundle": "Пакет сохранён. Примечание: изображение и звук хранятся раздельно; WhatsApp может принять изображение как обычный стикер.",
   "close": "Закрыть",
   "shareReadyToast": "Видео готово. Нажмите «Поделиться», чтобы отправить в WhatsApp или сохранить в Фото.",
-  "videoSilentToast": "В этом видео нет звука (или его не удалось прочитать). Выберите звук кнопкой аудио."
+  "videoSilentToast": "В этом видео нет звука (или его не удалось прочитать). Выберите звук кнопкой аудио.",
+  "browseSoundsBtn": "🔎 MyInstants",
+  "browseTitle": "MyInstants sounds",
+  "browseSearchPlaceholder": "Search sounds… (empty = trending)",
+  "browseUse": "Use",
+  "browseEmpty": "No sounds found.",
+  "browseMore": "Load more",
+  "browseError": "Could not load MyInstants. Check your connection.",
+  "browseGifsBtn": "🔎 Search GIF",
+  "gifBrowserTitle": "Tenor GIFs",
+  "gifSearchPlaceholder": "Search GIFs… (empty = memes)",
+  "gifEmpty": "No GIFs found.",
+  "gifError": "Could not load Tenor. Check your connection."
 }

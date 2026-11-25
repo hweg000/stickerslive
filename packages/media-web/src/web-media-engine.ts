@@ -420,9 +420,18 @@ export class WebMediaEngine implements MediaEngine {
       const audioBitrates = isWebm ? [64_000] : [96_000, 64_000, 128_000];
       const audioCodec = isWebm ? "opus" : "mp4a.40.2";
 
+      // Chromium's WebCodecs cannot encode alpha ("Alpha encoding is not currently supported"), but its
+      // MediaRecorder writes VP8/VP9 WebM with alpha. Prefer that over silently exporting an opaque WebM.
+      const recorderCanDoWebm =
+        isWebm &&
+        typeof MediaRecorder !== "undefined" &&
+        typeof document !== "undefined" &&
+        MediaRecorder.isTypeSupported("video/webm;codecs=vp9");
+
       try {
         let chosenVideoConfig: ExtendedVideoEncoderConfig | null = null;
         for (const candidate of videoCandidates) {
+          if (recorderCanDoWebm && candidate.alpha !== "keep") break;
           const vSupport = await VideoEncoder.isConfigSupported(candidate);
           if (vSupport.supported) {
             chosenVideoConfig = candidate;

@@ -48,5 +48,17 @@
   "exportSuccessBundle": "项目包已保存。提示：其中图片与音频为分开文件，WhatsApp 可能会将图片视为普通贴纸。",
   "close": "关闭",
   "shareReadyToast": "视频已就绪。点击“分享”发送到 WhatsApp 或保存到相册。",
-  "videoSilentToast": "此视频没有声音（或无法读取音轨）。你可以使用音频按钮选择一个声音。"
+  "videoSilentToast": "此视频没有声音（或无法读取音轨）。你可以使用音频按钮选择一个声音。",
+  "browseSoundsBtn": "🔎 MyInstants",
+  "browseTitle": "MyInstants sounds",
+  "browseSearchPlaceholder": "Search sounds… (empty = trending)",
+  "browseUse": "Use",
+  "browseEmpty": "No sounds found.",
+  "browseMore": "Load more",
+  "browseError": "Could not load MyInstants. Check your connection.",
+  "browseGifsBtn": "🔎 Search GIF",
+  "gifBrowserTitle": "Tenor GIFs",
+  "gifSearchPlaceholder": "Search GIFs… (empty = memes)",
+  "gifEmpty": "No GIFs found.",
+  "gifError": "Could not load Tenor. Check your connection."
 }

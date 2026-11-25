@@ -48,5 +48,17 @@
   "exportSuccessBundle": "Paquete guardado. Nota: contiene la imagen y el audio por separado; WhatsApp puede tratar la imagen como sticker normal.",
   "close": "Cerrar",
   "shareReadyToast": "Video listo. Toca \"Compartir\" para mandarlo a WhatsApp o guardarlo en Fotos.",
-  "videoSilentToast": "Este video no tiene sonido (o no se pudo leer). Si quieres, elige un audio con el botón de audio."
+  "videoSilentToast": "Este video no tiene sonido (o no se pudo leer). Si quieres, elige un audio con el botón de audio.",
+  "browseSoundsBtn": "🔎 MyInstants",
+  "browseTitle": "Sonidos de MyInstants",
+  "browseSearchPlaceholder": "Buscar sonido… (vacío = populares)",
+  "browseUse": "Usar",
+  "browseEmpty": "No se encontraron sonidos.",
+  "browseMore": "Cargar más",
+  "browseError": "No se pudo cargar MyInstants. Revisa tu conexión.",
+  "browseGifsBtn": "🔎 Buscar GIF",
+  "gifBrowserTitle": "GIFs de Tenor",
+  "gifSearchPlaceholder": "Buscar GIF… (vacío = memes)",
+  "gifEmpty": "No se encontraron GIFs.",
+  "gifError": "No se pudo cargar Tenor. Revisa tu conexión."
 }

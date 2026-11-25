@@ -36,6 +36,33 @@ function cleanTitle(rawTitle: string | null): string | null {
   return decoded.slice(0, 120);
 }
 
+export interface MyInstantsListItem {
+  title: string;
+  media_url: string;
+}
+
+// Each listed instant is: play('/media/sounds/x.mp3', ...) ... <a class="instant-link ...">Title</a>
+const LIST_ITEM_REGEX =
+  /play\(['"](\/media\/sounds\/[A-Za-z0-9._~!$&()*+,;=:@%/-]+\.(?:mp3|wav|ogg|m4a))['"][\s\S]*?class=["']instant-link[^"']*["'][^>]*>([^<]*)<\/a>/gi;
+
+/** Parses a MyInstants index/search results page into its list of sounds (deduped, allowlist-validated). */
+export function extractMyInstantsList(html: string): MyInstantsListItem[] {
+  const items: MyInstantsListItem[] = [];
+  const seen = new Set<string>();
+  for (const match of html.matchAll(LIST_ITEM_REGEX)) {
+    let mediaUrl: string;
+    try {
+      mediaUrl = validateMyInstantsUrl(`https://www.myinstants.com${match[1]}`).toString();
+    } catch {
+      continue;
+    }
+    if (seen.has(mediaUrl)) continue;
+    seen.add(mediaUrl);
+    items.push({ title: cleanTitle(match[2] ?? null) ?? mediaUrl.split("/").pop()!, media_url: mediaUrl });
+  }
+  return items;
+}
+
 export function extractMyInstantsFromHtml(html: string): ExtractedMyInstantsPage {
   const mediaMatch =
     html.match(PRIMARY_BUTTON_REGEX) ?? html.match(DOWNLOAD_LINK_REGEX) ?? html.match(MEDIA_PATH_REGEX);

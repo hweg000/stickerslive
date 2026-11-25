@@ -1,5 +1,6 @@
 import React, { useMemo, useRef } from "react";
 import { LIMITS, type PeakBuckets } from "@stiksound/core";
+import { IconPlay, IconStop } from "./icons";
 
 export interface TimelineTrimBarProps {
   hasAudio: boolean;
@@ -19,12 +20,15 @@ export interface TimelineTrimBarProps {
   onChangeRange: (startMs: number, endMs: number) => void;
   onChangeMaxWindowMs?: (maxMs: 5000 | 10000) => void;
   onTogglePlay: () => void;
+  /** Opens the sound browser; the button is hidden when not set. */
+  onBrowseSounds?: () => void;
   labels: {
     placeholder: string;
     pickBtn: string;
     play: string;
     stop: string;
     maxDurationAria?: string;
+    browseBtn?: string;
   };
 }
 
@@ -49,6 +53,7 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
   onChangeRange,
   onChangeMaxWindowMs,
   onTogglePlay,
+  onBrowseSounds,
   labels
 }) => {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -149,6 +154,17 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
             if (urlInput.trim()) onSubmitUrl(urlInput.trim());
           }}
         >
+          {onBrowseSounds && (
+            <button
+              type="button"
+              data-testid="browse-sounds-btn"
+              className="stik-pill-btn stik-pill-accent stik-browse-btn"
+              disabled={isBusy}
+              onClick={onBrowseSounds}
+            >
+              {labels.browseBtn ?? "MyInstants"}
+            </button>
+          )}
           {showUrlInput && (
             <input
               type="url"
@@ -188,7 +204,7 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
             aria-label={isPlaying ? labels.stop : labels.play}
             onClick={onTogglePlay}
           >
-            {isPlaying ? "■" : "▶"}
+            {isPlaying ? <IconStop /> : <IconPlay />}
           </button>
 
           <div

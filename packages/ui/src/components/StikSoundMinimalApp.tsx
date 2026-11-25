@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { IconArrow, IconClose, IconDownload, IconMore, IconSpinner } from "./icons";
 import {
   EXPORT_PROFILES,
   LIMITS,
@@ -28,6 +29,8 @@ import ptLocale from "../locales/pt.json";
 import ruLocale from "../locales/ru.json";
 import zhLocale from "../locales/zh.json";
 import { TimelineTrimBar } from "./TimelineTrimBar";
+import { SoundBrowser, type SoundSearchFn } from "./SoundBrowser";
+import { GifBrowser, type GifSearchResult, type GifSource } from "./GifBrowser";
 
 export type ShareOutcome = "shared" | "cancelled" | "needs-tap";
 
@@ -66,6 +69,10 @@ export interface StikSoundMinimalAppProps {
   platform?: PlatformOptions;
   labelOverrides?: Partial<Record<LocaleCode, Partial<UiLabels>>>;
   appVersion?: string;
+  /** When set, shows a MyInstants browser; picked sounds go through the URL import (providers). */
+  soundSearch?: SoundSearchFn;
+  /** When set, shows a GIF search (Tenor) on the empty sticker area. */
+  gifSource?: GifSource;
 }
 
 const REPO_URL = "https://github.com/SilverFeit/StikSound";
@@ -107,7 +114,9 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   initialState,
   platform,
   labelOverrides,
-  appVersion = "1.1.2"
+  appVersion = "1.1.2",
+  soundSearch,
+  gifSource
 }) => {
   const allowTransparent = platform?.transparentVideo !== false;
   const allowMyInstantsUrl = platform?.myInstantsUrl !== false;
@@ -121,6 +130,8 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   const [menuOpen, setMenuOpen] = useState(false);
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [browserOpen, setBrowserOpen] = useState(false);
+  const [gifBrowserOpen, setGifBrowserOpen] = useState(false);
   const [readyArtifact, setReadyArtifact] = useState<ExportArtifact | null>(null);
   const [maxDurationMs, setMaxDurationMs] = useState<5000 | 10000>(10_000);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -267,6 +278,24 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
       }
     },
     [controller, project, effectiveMaxAudioMs, handleError, stopPlayback]
+  );
+
+  const importGif = useCallback(
+    async (gif: GifSearchResult) => {
+      if (!gifSource) return;
+      setGifBrowserOpen(false);
+      setIsBusy(true);
+      let bytes: Uint8Array;
+      try {
+        bytes = await gifSource.download(gif);
+      } catch (err) {
+        handleError(err);
+        setIsBusy(false);
+        return;
+      }
+      await importStickerBytes(bytes, gif.gif_url.split("/").pop() || "tenor.gif");
+    },
+    [gifSource, handleError, importStickerBytes]
   );
 
   const importMyInstantsUrl = useCallback(
@@ -581,7 +610,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
           aria-label={copy.resetTooltip}
           onClick={handleResetAll}
         >
-          ✕
+          <IconClose />
         </button>
 
         <div className="stik-right-actions">
@@ -595,7 +624,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               setMenuOpen((o) => !o);
             }}
           >
-            ⋯
+            <IconMore />
           </button>
 
           <button
@@ -610,7 +639,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               setDownloadMenuOpen((o) => !o);
             }}
           >
-            ⬇
+            <IconDownload />
           </button>
 
           <button
@@ -622,7 +651,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             aria-label={exportDisabledReason}
             onClick={handlePreviewAndCopyArrow}
           >
-            {isBusy ? "…" : "➔"}
+            {isBusy ? <IconSpinner /> : <IconArrow />}
           </button>
         </div>
       </header>
@@ -796,7 +825,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               className="stik-pill-btn"
               onClick={() => setDownloadMenuOpen((o) => !o)}
             >
-              ⬇ {copy.downloadBtnLabel}
+              <IconDownload size={15} /> {copy.downloadBtnLabel}
             </button>
             <button
               type="button"
@@ -835,6 +864,20 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               <div className="stik-plus-icon">+</div>
               <p className="stik-empty-title">{copy.stickerDropTitle}</p>
               <p className="stik-empty-hint">{copy.stickerDropHint}</p>
+              {gifSource && (
+                <button
+                  type="button"
+                  data-testid="browse-gifs-btn"
+                  className="stik-pill-btn stik-pill-accent stik-gif-btn"
+                  disabled={isBusy}
+                  onClick={(e) => {
+                    e.stopPropagation(); // the stage itself opens the file picker
+                    setGifBrowserOpen(true);
+                  }}
+                >
+                  {copy.browseGifsBtn}
+                </button>
+              )}
             </div>
           ) : (
             <div className="stik-preview-box">
@@ -955,6 +998,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         urlInput={urlInput}
         onUrlInputChange={setUrlInput}
         onSubmitUrl={importMyInstantsUrl}
+        onBrowseSounds={soundSearch ? () => setBrowserOpen(true) : undefined}
         onSelectAudioFile={async (f) => importAudioBytes(new Uint8Array(await f.arrayBuffer()), f.name)}
         onChangeRange={handleRangeChange}
         onChangeMaxWindowMs={handleMaxDurationChange}
@@ -964,17 +1008,47 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
           pickBtn: copy.audioPickBtn,
           play: copy.playPreview,
           stop: copy.stopPreview,
-          maxDurationAria: copy.maxDurationAria
+          maxDurationAria: copy.maxDurationAria,
+          browseBtn: copy.browseSoundsBtn
         }}
       />
 
-      <footer className="stik-copyright-footer" data-testid="copyright-footer">
-        Copyright © 2026{" "}
-        <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-          SilverFeit
-        </a>
-        .
-      </footer>
+      {gifBrowserOpen && gifSource && (
+        <GifBrowser
+          search={(q) => gifSource.search(q)}
+          onClose={() => setGifBrowserOpen(false)}
+          onPick={(gif) => void importGif(gif)}
+          labels={{
+            title: copy.gifBrowserTitle,
+            placeholder: copy.gifSearchPlaceholder,
+            empty: copy.gifEmpty,
+            error: copy.gifError,
+            close: copy.close
+          }}
+        />
+      )}
+
+      {browserOpen && soundSearch && (
+        <SoundBrowser
+          search={soundSearch}
+          onClose={() => setBrowserOpen(false)}
+          onPick={(mediaUrl) => {
+            setBrowserOpen(false);
+            void importMyInstantsUrl(mediaUrl);
+          }}
+          labels={{
+            title: copy.browseTitle,
+            placeholder: copy.browseSearchPlaceholder,
+            use: copy.browseUse,
+            empty: copy.browseEmpty,
+            more: copy.browseMore,
+            error: copy.browseError,
+            play: copy.playPreview,
+            stop: copy.stopPreview,
+            close: copy.close
+          }}
+        />
+      )}
 
       {aboutOpen && (
         <div className="stik-modal-backdrop" onClick={() => setAboutOpen(false)}>
@@ -991,23 +1065,23 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               height="64"
               aria-hidden="true"
             >
-              <rect x="12" y="12" width="232" height="232" rx="54" fill="#141820" stroke="#25D366" strokeWidth="6" />
+              <rect x="12" y="12" width="232" height="232" rx="54" fill="#1d1a27" stroke="#A78BFA" strokeWidth="6" />
               <rect x="50" y="54" width="128" height="128" rx="30" fill="#1F2633" stroke="#344054" strokeWidth="4" />
-              <path d="M178 148 L144 182 L144 148 Z" fill="#25D366" opacity="0.9" />
+              <path d="M178 148 L144 182 L144 148 Z" fill="#A78BFA" opacity="0.9" />
               <circle cx="96" cy="108" r="10" fill="#F8FAFC" />
               <circle cx="132" cy="108" r="10" fill="#F8FAFC" />
               <path d="M92 136 Q114 156 136 136" fill="none" stroke="#F8FAFC" strokeWidth="8" strokeLinecap="round" />
-              <circle cx="184" cy="176" r="44" fill="#25D366" />
+              <circle cx="184" cy="176" r="44" fill="#A78BFA" />
               <path
                 d="M168 178 L168 156 L198 148 L198 172"
                 fill="none"
-                stroke="#08180E"
+                stroke="#1A1033"
                 strokeWidth="7"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <circle cx="163" cy="182" r="8" fill="#08180E" />
-              <circle cx="193" cy="174" r="8" fill="#08180E" />
+              <circle cx="163" cy="182" r="8" fill="#1A1033" />
+              <circle cx="193" cy="174" r="8" fill="#1A1033" />
             </svg>
 
             <h3 className="stik-about-title">StikSound</h3>
@@ -1026,13 +1100,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
                   Apache-2.0
                 </a>
               </p>
-              <p>
-                Copyright © 2026{" "}
-                <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-                  SilverFeit
-                </a>
-                .
-              </p>
               <p className="stik-about-github">
                 <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
                   GitHub ↗
@@ -1044,10 +1111,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               <summary>{copy.aboutThirdPartyTitle}</summary>
               <p>{copy.aboutThirdPartySummary}</p>
             </details>
-
-            <p className="stik-about-footer">
-              {copy.aboutLicenseLine} Copyright © 2026 SilverFeit.
-            </p>
 
             <button type="button" className="stik-pill-btn stik-about-close" onClick={() => setAboutOpen(false)}>
               {copy.close}

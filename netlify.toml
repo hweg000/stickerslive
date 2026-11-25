@@ -1,0 +1,7 @@
+# Used when the site is imported from Git. A drag-and-drop deploy of apps/web/dist needs none of this.
+[build]
+  command = "npm run build --workspace=@stiksound/web"
+  publish = "apps/web/dist"
+
+[build.environment]
+  NODE_VERSION = "22"

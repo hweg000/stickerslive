@@ -1,0 +1,4 @@
+# Netlify proxy rules: same role as the Vite dev proxy in vite.config.ts.
+# myinstants.com and tenor.com send no CORS headers, so the app reaches them through these paths.
+/mi/*     https://www.myinstants.com/:splat  200
+/tenor/*  https://tenor.com/:splat           200

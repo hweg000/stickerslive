@@ -293,7 +293,7 @@ describe("StikSoundMinimalApp UI", () => {
     await waitFor(() => expect(screen.getByTestId("duration-readout").textContent).toBe("5.0s / 5.0s"));
   });
 
-  it("renders subtle copyright footer, redesigned About modal, and switches across all 9 locales including RTL Arabic", () => {
+  it("renders no copyright notice, redesigned About modal, and switches across all 9 locales including RTL Arabic", () => {
     render(
       <StikSoundMinimalApp
         engine={createTestEngine()}
@@ -304,10 +304,7 @@ describe("StikSoundMinimalApp UI", () => {
       />
     );
 
-    const footer = screen.getByTestId("copyright-footer");
-    expect(footer.textContent).toContain("Copyright © 2026");
-    const repoLink = footer.querySelector("a");
-    expect(repoLink?.getAttribute("href")).toBe("https://github.com/SilverFeit/StikSound");
+    expect(screen.queryByTestId("copyright-footer")).toBeNull();
 
     // Open overflow menu and switch language to Chinese, then Arabic (RTL)
     fireEvent.click(screen.getByTestId("overflow-menu-btn"));
@@ -330,7 +327,79 @@ describe("StikSoundMinimalApp UI", () => {
     expect(aboutModal.textContent).toContain("Version 1.1.2");
     expect(aboutModal.textContent).toContain("MIT");
     expect(aboutModal.textContent).toContain("Apache-2.0");
-    expect(aboutModal.textContent).toContain("Copyright © 2026 SilverFeit");
+    expect(aboutModal.textContent).not.toContain("Copyright");
     expect(aboutModal.textContent).toContain("symphonia");
+  });
+
+  it("sound browser lists MyInstants results and 'Use' imports the picked sound through the providers", async () => {
+    const mediaUrl = "https://www.myinstants.com/media/sounds/bruh.mp3";
+    const soundSearch = vi.fn(async () => [{ title: "Bruh", media_url: mediaUrl }]);
+    const resolve = vi.fn(async (url: string) => ({
+      page_url: null,
+      media_url: url,
+      title: null,
+      bytes: new Uint8Array([1, 2, 3, 4])
+    }));
+    const provider: SoundProvider = { id: "myinstants", canResolve: () => true, resolve };
+
+    render(
+      <StikSoundMinimalApp
+        engine={createTestEngine()}
+        providers={[provider]}
+        shell={{ saveArtifact: vi.fn() }}
+        initialLocale="es"
+        soundSearch={soundSearch}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId("browse-sounds-btn"));
+    expect(screen.getByTestId("sound-browser")).toBeTruthy();
+    await waitFor(() => expect(screen.getByText("Bruh")).toBeTruthy());
+    expect(soundSearch).toHaveBeenCalledWith("", 1);
+
+    fireEvent.click(screen.getByTestId("sound-use-btn"));
+    expect(screen.queryByTestId("sound-browser")).toBeNull();
+    await waitFor(() => expect(resolve).toHaveBeenCalledWith(mediaUrl));
+    await waitFor(() => expect(screen.getByTestId("play-preview-btn")).toBeTruthy());
+  });
+
+  it("hides the sound and GIF browser buttons when no sources are given", () => {
+    render(<StikSoundMinimalApp engine={createTestEngine()} shell={{ saveArtifact: vi.fn() }} initialLocale="es" />);
+    expect(screen.queryByTestId("browse-sounds-btn")).toBeNull();
+    expect(screen.queryByTestId("browse-gifs-btn")).toBeNull();
+  });
+
+  it("GIF browser: picking a result downloads it and loads it as the sticker (without opening the file picker)", async () => {
+    const gif = {
+      title: "cat",
+      preview_url: "https://media.tenor.com/abcAAAAM/cat.gif",
+      gif_url: "https://media.tenor.com/abcAAAAC/cat.gif"
+    };
+    const gifSource = {
+      search: vi.fn(async () => [gif]),
+      download: vi.fn(async () => new Uint8Array([0x47, 0x49, 0x46, 0x38]))
+    };
+    render(
+      <StikSoundMinimalApp
+        engine={createTestEngine(400, 400, true)}
+        shell={{ saveArtifact: vi.fn() }}
+        initialLocale="es"
+        gifSource={gifSource}
+      />
+    );
+    const fileInput = screen
+      .getByTestId("stiksound-minimal-app")
+      .querySelector('input[accept*="image/png"]') as HTMLInputElement;
+    const pickerClick = vi.spyOn(fileInput, "click");
+
+    fireEvent.click(screen.getByTestId("browse-gifs-btn"));
+    expect(pickerClick).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByTestId("gif-item")).toBeTruthy());
+    expect(gifSource.search).toHaveBeenCalledWith("");
+
+    fireEvent.click(screen.getByTestId("gif-item"));
+    expect(screen.queryByTestId("gif-browser")).toBeNull();
+    await waitFor(() => expect(gifSource.download).toHaveBeenCalledWith(gif));
+    await waitFor(() => expect(screen.getByTestId("sticker-zone").className).toContain("has-sticker"));
   });
 });
