@@ -677,6 +677,70 @@ textarea {
   flex: 1 1 auto;
 }
 
+.stik-publish-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stik-consent {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+  text-align: left;
+}
+
+.stik-consent input {
+  margin-top: 2px;
+  accent-color: var(--accent);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.stik-gallery-item {
+  position: relative;
+}
+
+.stik-gallery-author {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #f3f4f6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stik-gallery-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.stik-gallery-video {
+  width: min(100%, 320px);
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  background: #000;
+}
+
+.stik-gallery-caption {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+}
+
 .stik-tour {
   max-width: 360px;
   display: flex;

@@ -15,7 +15,8 @@ export default defineConfig({
       "packages/**/test/**/*.test.ts",
       "packages/**/test/**/*.test.tsx",
       "apps/**/test/**/*.test.ts",
-      "apps/**/test/**/*.test.tsx"
+      "apps/**/test/**/*.test.tsx",
+      "netlify/**/*.test.ts"
     ],
     environment: "node"
   }

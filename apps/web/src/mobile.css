@@ -24,6 +24,70 @@ body {
   padding-bottom: calc(14px + 56px + env(safe-area-inset-bottom));
 }
 
+/* Gallery moderation page (/#admin) */
+.stik-admin {
+  height: 100dvh;
+  overflow-y: auto;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 20px 16px 80px;
+  user-select: text;
+}
+
+.stik-admin h1 {
+  font-size: 20px;
+}
+
+.stik-admin h2 {
+  font-size: 16px;
+  margin: 24px 0 8px;
+}
+
+.stik-admin-hint {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.stik-admin-hint a {
+  color: var(--accent);
+}
+
+.stik-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.stik-admin-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.stik-admin-play {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.stik-admin-media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #000;
+}
+
+.stik-admin-loading {
+  background: var(--border);
+}
+
 /* The popover's fixed top ignores the notch in the installed (standalone) app */
 .stik-popover {
   top: calc(60px + env(safe-area-inset-top));

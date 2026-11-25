@@ -5,3 +5,7 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# Community gallery API (netlify/functions/gallery.mts) and its Blobs storage.
+[functions]
+  directory = "netlify/functions"

@@ -24,8 +24,8 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
   if (req.method !== "GET" || url.origin !== self.location.origin) return;
-  // MyInstants/Tenor go through the host proxy (/mi, /tenor); search results must stay live.
-  if (/\/(mi|tenor)\//.test(url.pathname)) return;
+  // Proxied searches (/mi, /tenor) and the gallery API (/api) must stay live, never cached.
+  if (/\/(mi|tenor|api)\//.test(url.pathname)) return;
 
   event.respondWith(
     (async () => {

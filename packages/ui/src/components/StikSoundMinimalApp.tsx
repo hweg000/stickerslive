@@ -37,6 +37,7 @@ import { SoundBrowser, type SoundSearchFn } from "./SoundBrowser";
 import { GifBrowser, type GifSearchResult, type GifSource } from "./GifBrowser";
 import { MAX_RECORDING_MS, canRecordAudio, startRecording, type ActiveRecording } from "./recording";
 import { Tour, hasSeenTour, markTourSeen } from "./Tour";
+import { GalleryBrowser, PublishDialog, type GalleryClient, type GalleryLabels } from "./Gallery";
 import waSoundButtonImg from "../assets/wa-editor-sound-button.png";
 import waBecomeTesterImg from "../assets/wa-become-tester.png";
 
@@ -81,6 +82,8 @@ export interface StikSoundMinimalAppProps {
   gifSource?: GifSource;
   /** Open the "how to use" tour on the first visit (remembered in localStorage). Always in the ⋯ menu. */
   showTourOnFirstVisit?: boolean;
+  /** Community gallery: "Publish" on the ready card and a gallery link; hidden when not set. */
+  gallery?: GalleryClient;
 }
 
 const REPO_URL = "https://github.com/hweg000/stickerslive";
@@ -127,7 +130,8 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   appVersion = "1.1.2",
   soundSearch,
   gifSource,
-  showTourOnFirstVisit = false
+  showTourOnFirstVisit = false,
+  gallery
 }) => {
   const allowTransparent = platform?.transparentVideo !== false;
   const allowMyInstantsUrl = platform?.myInstantsUrl !== false;
@@ -152,6 +156,8 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   }, []);
   const [waGuideOpen, setWaGuideOpen] = useState(false);
   const closeWaGuide = useCallback(() => setWaGuideOpen(false), []);
+  const [publishOpen, setPublishOpen] = useState(false);
+  const [galleryOpen, setGalleryOpen] = useState(false);
   const [readyArtifact, setReadyArtifact] = useState<ExportArtifact | null>(null);
   const [maxDurationMs, setMaxDurationMs] = useState<5000 | 10000>(10_000);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -650,6 +656,27 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
       ? { backgroundImage: "none", backgroundColor: currentMatte }
       : undefined;
 
+  const galleryLabels: GalleryLabels = {
+    title: copy.galleryTitle,
+    empty: copy.galleryEmpty,
+    error: copy.galleryError,
+    anonymous: copy.galleryAnonymous,
+    report: copy.galleryReport,
+    reported: copy.galleryReported,
+    download: copy.galleryDownload,
+    back: copy.backToEditBtn,
+    close: copy.close,
+    publishTitle: copy.galleryPublishTitle,
+    publishAuthor: copy.galleryPublishAuthor,
+    publishAuthorHint: copy.galleryPublishAuthorHint,
+    publishName: copy.galleryPublishName,
+    publishConsent: copy.galleryPublishConsent,
+    publishSend: copy.galleryPublishSend,
+    publishSent: copy.galleryPublishSent,
+    publishError: copy.galleryPublishError,
+    publishRateLimited: copy.galleryPublishRateLimited
+  };
+
   // Mirrors computeSquareCrop exactly, so the preview is what gets exported.
   const previewStyle: React.CSSProperties | undefined =
     sticker && squareMeta
@@ -935,6 +962,16 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               {copy.backToEditBtn}
             </button>
           </div>
+          {gallery && (
+            <button
+              type="button"
+              data-testid="publish-btn"
+              className="stik-pill-btn stik-secondary-btn"
+              onClick={() => setPublishOpen(true)}
+            >
+              {copy.galleryPublishBtn}
+            </button>
+          )}
           <button
             type="button"
             data-testid="ready-whatsapp-help"
@@ -1001,6 +1038,19 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
                 {copy.uploadStickerBtn}
               </button>
               <p className="stik-empty-hint">{copy.stickerDropHint}</p>
+              {gallery && (
+                <button
+                  type="button"
+                  data-testid="open-gallery-btn"
+                  className="stik-link-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setGalleryOpen(true);
+                  }}
+                >
+                  {copy.galleryOpenBtn}
+                </button>
+              )}
             </div>
           ) : !sticker ? (
             <div className="stik-empty-sticker">
@@ -1234,6 +1284,29 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             done: copy.tourDone
           }}
         />
+      )}
+
+      {gallery && publishOpen && readyArtifact && sticker && (
+        <PublishDialog
+          labels={galleryLabels}
+          onClose={() => setPublishOpen(false)}
+          onSubmit={async (author, title) => {
+            const stickerBytes = project.assets.get(sticker.file);
+            if (!stickerBytes) throw new Error("sticker bytes missing");
+            const thumb = await engine.renderSticker(stickerBytes, sticker.edit);
+            await gallery.submit({
+              video: readyArtifact,
+              thumb,
+              thumbBackground: isTransparentSelected ? "#1c1a24" : currentMatte,
+              author,
+              title
+            });
+          }}
+        />
+      )}
+
+      {gallery && galleryOpen && (
+        <GalleryBrowser client={gallery} labels={galleryLabels} onClose={() => setGalleryOpen(false)} />
       )}
 
       {waGuideOpen && (
