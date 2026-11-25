@@ -128,6 +128,19 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
     );
   };
 
+  const recordButton = recording && (
+    <button
+      type="button"
+      data-testid="record-audio-btn"
+      className={`stik-pill-btn stik-record-btn${recording.active ? " recording" : ""}`}
+      disabled={isBusy && !recording.active}
+      aria-pressed={recording.active}
+      onClick={recording.onToggle}
+    >
+      {recording.active ? `${labels.recordStop ?? "Stop"} ${formatSec(recording.elapsedMs)}` : labels.recordBtn ?? "Record"}
+    </button>
+  );
+
   return (
     <div
       data-testid="timeline-bar"
@@ -160,17 +173,22 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
           }}
         >
           {onBrowseSounds && (
-            <button
-              type="button"
-              data-testid="browse-sounds-btn"
-              className="stik-pill-btn stik-pill-accent stik-browse-btn"
-              disabled={isBusy}
-              onClick={onBrowseSounds}
-            >
-              {labels.browseBtn ?? "MyInstants"}
-            </button>
+            // Row 1: the two ways to get a new sound. The sound browser also accepts pasted links,
+            // so the URL field is only shown on shells without it.
+            <div className="stik-audio-row">
+              <button
+                type="button"
+                data-testid="browse-sounds-btn"
+                className="stik-pill-btn stik-pill-accent stik-browse-btn"
+                disabled={isBusy}
+                onClick={onBrowseSounds}
+              >
+                {labels.browseBtn ?? "MyInstants"}
+              </button>
+              {recordButton}
+            </div>
           )}
-          {showUrlInput && (
+          {showUrlInput && !onBrowseSounds && (
             <input
               type="url"
               data-testid="myinstants-url-input"
@@ -189,30 +207,19 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
               }}
             />
           )}
-          <button
-            type="button"
-            data-testid="audio-pick-btn"
-            className={`stik-pill-btn${showUrlInput ? "" : " stik-pill-wide"}`}
-            disabled={isBusy}
-            onClick={() => fileRef.current?.click()}
-          >
-            {labels.pickBtn}
-          </button>
-          {recording && (
+          <div className="stik-audio-row">
             <button
               type="button"
-              data-testid="record-audio-btn"
-              className={`stik-pill-btn stik-record-btn${recording.active ? " recording" : ""}`}
-              disabled={isBusy && !recording.active}
-              aria-pressed={recording.active}
-              onClick={recording.onToggle}
+              data-testid="audio-pick-btn"
+              className={`stik-pill-btn${showUrlInput ? "" : " stik-pill-wide"}`}
+              disabled={isBusy}
+              onClick={() => fileRef.current?.click()}
             >
-              {recording.active
-                ? `${labels.recordStop ?? "Stop"} ${formatSec(recording.elapsedMs)}`
-                : labels.recordBtn ?? "Record"}
+              {labels.pickBtn}
             </button>
-          )}
-          {renderDurationSwitch()}
+            {!onBrowseSounds && recordButton}
+            {renderDurationSwitch()}
+          </div>
         </form>
       ) : (
         <div className="stik-timeline-active">

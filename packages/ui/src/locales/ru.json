@@ -49,7 +49,7 @@
   "videoSilentToast": "В этом видео нет звука (или его не удалось прочитать). Выберите звук кнопкой аудио.",
   "browseSoundsBtn": "🔎 Search sounds",
   "browseTitle": "MyInstants sounds",
-  "browseSearchPlaceholder": "Search sounds… (empty = trending)",
+  "browseSearchPlaceholder": "Search or paste a MyInstants link…",
   "browseUse": "Use",
   "browseEmpty": "No sounds found.",
   "browseMore": "Load more",

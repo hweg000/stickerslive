@@ -4,6 +4,9 @@ import { IconClose, IconPlay, IconSpinner, IconStop } from "./icons";
 // On phones, focusing the search box on open pops the keyboard over the results.
 const isTouch = typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches === true;
 
+// A pasted MyInstants link is imported directly (the provider validates it) instead of searched.
+const MYINSTANTS_LINK = /^https?:\/\/(www\.)?myinstants\.com\//i;
+
 export interface SoundSearchResult {
   title: string;
   media_url: string;
@@ -105,7 +108,13 @@ export const SoundBrowser = ({ search, onPick, onClose, labels }: SoundBrowserPr
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            void load(query, 1);
+            const q = query.trim();
+            if (MYINSTANTS_LINK.test(q)) {
+              audioRef.current?.pause();
+              onPick(q);
+              return;
+            }
+            void load(q, 1);
           }}
         >
           <input
@@ -116,6 +125,14 @@ export const SoundBrowser = ({ search, onPick, onClose, labels }: SoundBrowserPr
             value={query}
             autoFocus={!isTouch}
             onChange={(e) => setQuery(e.target.value)}
+            onPaste={(e) => {
+              const text = e.clipboardData.getData("text/plain").trim();
+              if (MYINSTANTS_LINK.test(text)) {
+                e.preventDefault();
+                audioRef.current?.pause();
+                onPick(text);
+              }
+            }}
           />
         </form>
 

@@ -314,6 +314,9 @@ async function canEncodeAlphaWebm(): Promise<boolean> {
   }
 }
 
+// Netlify free sites append a HUD script that draws a badge over the bottom-right corner (see mobile.css).
+if (document.querySelector("script[data-nf-variant]")) document.documentElement.classList.add("has-host-badge");
+
 const root = createRoot(document.getElementById("root")!);
 void canEncodeAlphaWebm().then((transparentVideo) =>
   root.render(

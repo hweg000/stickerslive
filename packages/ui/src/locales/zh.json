@@ -49,7 +49,7 @@
   "videoSilentToast": "此视频没有声音（或无法读取音轨）。你可以使用音频按钮选择一个声音。",
   "browseSoundsBtn": "🔎 Search sounds",
   "browseTitle": "MyInstants sounds",
-  "browseSearchPlaceholder": "Search sounds… (empty = trending)",
+  "browseSearchPlaceholder": "Search or paste a MyInstants link…",
   "browseUse": "Use",
   "browseEmpty": "No sounds found.",
   "browseMore": "Load more",

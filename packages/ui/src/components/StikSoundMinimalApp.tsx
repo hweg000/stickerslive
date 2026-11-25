@@ -751,21 +751,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
 
           <button
             type="button"
-            data-testid="download-btn"
-            className={`stik-corner-btn stik-download-btn ${sticker && !isBusy ? "ready" : "disabled"}`}
-            disabled={!sticker || isBusy}
-            title={sticker ? copy.downloadTooltip : exportDisabledReason}
-            aria-label={copy.downloadTooltip}
-            onClick={() => {
-              setMenuOpen(false);
-              setDownloadMenuOpen((o) => !o);
-            }}
-          >
-            <IconDownload />
-          </button>
-
-          <button
-            type="button"
             data-testid="export-ok-btn"
             className={`stik-corner-btn stik-ok-btn ${canExport ? "ready" : "disabled"}`}
             disabled={!canExport}

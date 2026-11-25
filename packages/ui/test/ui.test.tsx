@@ -103,9 +103,9 @@ describe("StikSoundMinimalApp UI", () => {
     );
 
     const okArrowBtn = screen.getByTestId("export-ok-btn") as HTMLButtonElement;
-    const downloadBtn = screen.getByTestId("download-btn") as HTMLButtonElement;
     expect(okArrowBtn.disabled).toBe(true);
-    expect(downloadBtn.disabled).toBe(true);
+    // The top-bar download button is gone; the arrow (share) is the only export action up there.
+    expect(screen.queryByTestId("download-btn")).toBeNull();
 
     // Drop a non-square 800x400 GIF onto the center sticker zone
     const stickerZone = screen.getByTestId("sticker-zone");
@@ -134,7 +134,6 @@ describe("StikSoundMinimalApp UI", () => {
 
     await waitFor(() => expect(screen.getByTestId("duration-readout").textContent).toContain("10.0s / 10.0s"));
     expect(okArrowBtn.disabled).toBe(false);
-    expect(downloadBtn.disabled).toBe(false);
 
     // Click Arrow (➔) -> generates most compatible preview & copies to clipboard without downloading
     fireEvent.click(okArrowBtn);
@@ -143,8 +142,8 @@ describe("StikSoundMinimalApp UI", () => {
     expect(saveArtifact).not.toHaveBeenCalled();
     expect(screen.getByTestId("video-preview-ready")).toBeTruthy();
 
-    // Click Download (⬇) -> opens format picker; pick High Quality / Transparent WebM
-    fireEvent.click(downloadBtn);
+    // "Guardar" on the ready card opens the format picker; pick High Quality / Transparent WebM
+    fireEvent.click(screen.getByTestId("preview-download-btn"));
     expect(screen.getByTestId("download-format-picker")).toBeTruthy();
     fireEvent.click(screen.getByTestId("download-fmt-video-webm-alpha"));
     await waitFor(() => expect(saveArtifact).toHaveBeenCalledTimes(1));
@@ -276,8 +275,18 @@ describe("StikSoundMinimalApp UI", () => {
 
     await waitFor(() => expect(screen.getByTestId("duration-readout").textContent).toBe("5.0s / 5.0s"));
 
+    // The format picker now lives behind the arrow (share) -> "Guardar" on the ready card
+    const openFormatPicker = async () => {
+      if (!screen.queryByTestId("preview-download-btn")) {
+        fireEvent.click(screen.getByTestId("export-ok-btn"));
+        await waitFor(() => expect(screen.getByTestId("preview-download-btn")).toBeTruthy());
+      }
+      fireEvent.click(screen.getByTestId("preview-download-btn"));
+      await waitFor(() => expect(screen.getByTestId("download-fmt-video-mp4")).toBeTruthy());
+    };
+
     // Download MP4 at 5s cap
-    fireEvent.click(screen.getByTestId("download-btn"));
+    await openFormatPicker();
     const mp4Choice = screen.getByTestId("download-fmt-video-mp4");
     expect(mp4Choice.textContent ?? "").toMatch(/video mp4/i);
     expect(mp4Choice.textContent ?? "").not.toMatch(/whatsapp/i);
@@ -294,7 +303,7 @@ describe("StikSoundMinimalApp UI", () => {
     await waitFor(() => expect(screen.getByTestId("duration-readout").textContent).toBe("10.0s / 10.0s"));
 
     // Download MP4 at 10s cap
-    fireEvent.click(screen.getByTestId("download-btn"));
+    await openFormatPicker();
     fireEvent.click(screen.getByTestId("download-fmt-video-mp4"));
     await waitFor(() => expect(saved).toHaveLength(2));
     expect(saved[1]!.fileName).toMatch(/-10s\.mp4$/);
@@ -374,6 +383,13 @@ describe("StikSoundMinimalApp UI", () => {
     expect(screen.getByTestId("sound-browser")).toBeTruthy();
     await waitFor(() => expect(screen.getByText("Bruh")).toBeTruthy());
     expect(soundSearch).toHaveBeenCalledWith("", 1);
+    // With a sound browser, the separate URL field is gone from the audio bar
+    expect(screen.queryByTestId("myinstants-url-input")).toBeNull();
+
+    // A typed search goes to the search; a MyInstants link is not searched
+    fireEvent.change(screen.getByTestId("sound-search-input"), { target: { value: "airhorn" } });
+    fireEvent.submit(screen.getByTestId("sound-search-input").closest("form")!);
+    await waitFor(() => expect(soundSearch).toHaveBeenCalledWith("airhorn", 1));
 
     fireEvent.click(screen.getByTestId("sound-use-btn"));
     expect(screen.queryByTestId("sound-browser")).toBeNull();
@@ -510,5 +526,27 @@ describe("microphone recording", () => {
     await waitFor(() => expect(recordingMock.stop).toHaveBeenCalled());
     // Imported through the normal audio path -> the trim bar switches to the active player
     await waitFor(() => expect(screen.getByTestId("play-preview-btn")).toBeTruthy());
+  });
+});
+
+describe("sound browser links", () => {
+  it("pasting a MyInstants link in the sound search imports it directly", async () => {
+    const link = "https://www.myinstants.com/es/instant/bruh-1234/";
+    const soundSearch = vi.fn(async () => []);
+    const resolve = vi.fn(async (url: string) => ({ page_url: url, media_url: url, title: null, bytes: new Uint8Array([1, 2, 3, 4]) }));
+    render(
+      <StikSoundMinimalApp
+        engine={createTestEngine()}
+        providers={[{ id: "myinstants", canResolve: () => true, resolve }]}
+        shell={{ saveArtifact: vi.fn() }}
+        initialLocale="es"
+        soundSearch={soundSearch}
+      />
+    );
+    fireEvent.click(screen.getByTestId("browse-sounds-btn"));
+    fireEvent.paste(screen.getByTestId("sound-search-input"), { clipboardData: { getData: () => link } });
+    await waitFor(() => expect(resolve).toHaveBeenCalledWith(link));
+    expect(soundSearch).not.toHaveBeenCalledWith(link, 1);
+    await waitFor(() => expect(screen.queryByTestId("sound-browser")).toBeNull());
   });
 });

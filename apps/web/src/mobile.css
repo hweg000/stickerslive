@@ -18,6 +18,12 @@ body {
   overflow-y: auto;
 }
 
+/* Netlify's free tier injects a fixed "Powered by Netlify" badge at the bottom-right
+   (main.tsx sets this class only when its script is on the page): keep the audio bar clear. */
+.has-host-badge .stik-shell {
+  padding-bottom: calc(14px + 56px + env(safe-area-inset-bottom));
+}
+
 /* The popover's fixed top ignores the notch in the installed (standalone) app */
 .stik-popover {
   top: calc(60px + env(safe-area-inset-top));

@@ -137,12 +137,7 @@ textarea {
   box-shadow: 0 6px 22px rgba(139, 92, 246, 0.6);
 }
 
-.stik-download-btn.ready:hover {
-  color: var(--accent);
-}
-
-.stik-ok-btn.disabled,
-.stik-download-btn.disabled {
+.stik-ok-btn.disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
@@ -375,9 +370,14 @@ textarea {
 
 .stik-audio-empty-form {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
-  align-items: center;
+}
+
+.stik-audio-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
 }
 
 /* URL field gets its own row; next to the long "Choose sound" button it got squeezed to a few chars */
@@ -391,9 +391,18 @@ textarea {
 }
 
 .stik-pill-btn.stik-browse-btn {
-  flex-basis: 100%;
+  flex: 1 1 auto;
   padding: 12px 14px;
   font-size: 15px;
+}
+
+/* Record sits next to the primary search: same height, its own fixed width */
+.stik-audio-empty-form .stik-audio-row .stik-pill-btn.stik-record-btn {
+  flex: 0 0 auto;
+  min-height: 46px;
+  padding: 0 16px;
+  font-size: 13px;
+  color: var(--text);
 }
 
 .stik-sound-browser {
