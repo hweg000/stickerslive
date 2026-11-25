@@ -147,6 +147,8 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
     markTourSeen();
     setTourOpen(false);
   }, []);
+  const [waGuideOpen, setWaGuideOpen] = useState(false);
+  const closeWaGuide = useCallback(() => setWaGuideOpen(false), []);
   const [readyArtifact, setReadyArtifact] = useState<ExportArtifact | null>(null);
   const [maxDurationMs, setMaxDurationMs] = useState<5000 | 10000>(10_000);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -848,6 +850,16 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             </button>
             <button
               type="button"
+              data-testid="menu-whatsapp-btn"
+              onClick={() => {
+                setMenuOpen(false);
+                setWaGuideOpen(true);
+              }}
+            >
+              {copy.menuWhatsapp}
+            </button>
+            <button
+              type="button"
               onClick={() => {
                 setMenuOpen(false);
                 setAboutOpen(true);
@@ -911,6 +923,14 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               {copy.backToEditBtn}
             </button>
           </div>
+          <button
+            type="button"
+            data-testid="ready-whatsapp-help"
+            className="stik-link-btn"
+            onClick={() => setWaGuideOpen(true)}
+          >
+            {copy.readyWhatsappHelp}
+          </button>
         </main>
       ) : (
         <main
@@ -1199,6 +1219,33 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             next: copy.tourNext,
             back: copy.tourBack,
             skip: copy.tourSkip,
+            done: copy.tourDone
+          }}
+        />
+      )}
+
+      {waGuideOpen && (
+        <Tour
+          onClose={closeWaGuide}
+          steps={[
+            { icon: "📱", title: copy.waStep1Title, text: copy.waStep1Text },
+            {
+              icon: "🧪",
+              title: copy.waStep2Title,
+              text: copy.waStep2Text,
+              // Google Play's standard opt-in page for an app's beta program.
+              link: { href: "https://play.google.com/apps/testing/com.whatsapp", label: copy.waBetaLink }
+            },
+            { icon: "⬆️", title: copy.waStep3Title, text: copy.waStep3Text },
+            { icon: "🍎", title: copy.waStep4Title, text: copy.waStep4Text },
+            { icon: "🎬", title: copy.waStep5Title, text: copy.waStep5Text },
+            { icon: "✨", title: copy.waStep6Title, text: copy.waStep6Text }
+          ]}
+          labels={{
+            title: copy.waGuideTitle,
+            next: copy.tourNext,
+            back: copy.tourBack,
+            skip: copy.close,
             done: copy.tourDone
           }}
         />

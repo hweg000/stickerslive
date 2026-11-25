@@ -5,6 +5,8 @@ export interface TourStep {
   icon: string;
   title: string;
   text: string;
+  /** Optional external link shown under the text (opens in a new tab). */
+  link?: { href: string; label: string };
 }
 
 export interface TourProps {
@@ -76,6 +78,11 @@ export const Tour = ({ steps, onClose, labels }: TourProps) => {
         <p className="stik-tour-text" data-testid="tour-text">
           {step.text}
         </p>
+        {step.link && (
+          <a className="stik-tour-link" data-testid="tour-link" href={step.link.href} target="_blank" rel="noopener noreferrer">
+            {step.link.label} ↗
+          </a>
+        )}
 
         <div className="stik-tour-dots" aria-hidden="true">
           {steps.map((_, i) => (

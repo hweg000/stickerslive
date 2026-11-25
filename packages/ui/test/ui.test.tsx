@@ -617,3 +617,23 @@ describe("how-to tour", () => {
     localStorage.removeItem("sticksound.tourSeen");
   });
 });
+
+describe("WhatsApp sticker guide", () => {
+  it("opens from the menu, walks 6 steps and links the Android beta opt-in", () => {
+    render(<StikSoundMinimalApp engine={createTestEngine()} shell={{ saveArtifact: vi.fn() }} initialLocale="es" />);
+    fireEvent.click(screen.getByTestId("overflow-menu-btn"));
+    fireEvent.click(screen.getByTestId("menu-whatsapp-btn"));
+    expect(screen.getByTestId("tour").textContent).toContain("Sticker en WhatsApp · 1/6");
+
+    fireEvent.click(screen.getByTestId("tour-next"));
+    expect(screen.getByTestId("tour-text").textContent).toContain("Únete a la beta");
+    expect(screen.getByTestId("tour-link").getAttribute("href")).toBe("https://play.google.com/apps/testing/com.whatsapp");
+    expect(screen.getByTestId("tour-link").getAttribute("rel")).toContain("noopener");
+
+    for (let i = 0; i < 4; i++) fireEvent.click(screen.getByTestId("tour-next"));
+    expect(screen.getByTestId("tour").textContent).toContain("6/6");
+    expect(screen.getByTestId("tour-text").textContent).toContain("Crear sticker");
+    fireEvent.click(screen.getByTestId("tour-next"));
+    expect(screen.queryByTestId("tour")).toBeNull();
+  });
+});

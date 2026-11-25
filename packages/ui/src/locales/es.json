@@ -82,5 +82,21 @@
   "tourStep3Title": "Ponle sonido",
   "tourStep3Text": "Busca un sonido de MyInstants, graba tu voz con 🎙️ o sube un audio. Luego mueve la ventana para elegir el fragmento de 5 o 10 segundos. Con «Cambiar sonido» lo reemplazas cuando quieras.",
   "tourStep4Title": "Compártelo",
-  "tourStep4Text": "Toca la flecha ➜ de arriba: crea el video y te deja compartirlo o guardarlo. En WhatsApp se envía como video; si tu WhatsApp tiene los stickers con sonido (beta), usa Stickers → Crear sticker y elige ese video."
+  "tourStep4Text": "Toca la flecha ➜ de arriba: crea el video y te deja compartirlo o guardarlo. En WhatsApp se envía como video; si tu WhatsApp tiene los stickers con sonido (beta), usa Stickers → Crear sticker y elige ese video.",
+  "menuWhatsapp": "💬 Sticker en WhatsApp",
+  "waGuideTitle": "Sticker en WhatsApp",
+  "readyWhatsappHelp": "💬 ¿Cómo hacerlo sticker en WhatsApp?",
+  "waBetaLink": "Unirme a la beta de WhatsApp",
+  "waStep1Title": "¿Ya lo tienes?",
+  "waStep1Text": "Abre un chat en WhatsApp, toca el ícono de stickers y luego «Crear sticker». Elige cualquier video: si arriba aparece un botón de audio o «Agregar sonido», ya lo tienes y puedes saltar al paso 5. La función todavía está en prueba, así que puede cambiar.",
+  "waStep2Title": "Hazte tester (Android)",
+  "waStep2Text": "Los stickers con sonido solo están en la beta. En la Play Store abre la página de WhatsApp, baja hasta «Únete a la beta» y toca «Unirme», o entra desde el enlace de abajo. Si dice que el programa está lleno, inténtalo otro día.",
+  "waStep3Title": "Actualiza WhatsApp",
+  "waStep3Text": "Espera unos minutos y actualiza WhatsApp desde la Play Store; su página dirá «Eres usuario beta». Revisa tu versión en Ajustes → Ayuda → Info. de la app: los stickers con sonido llegaron en la 2.26.41.3. Aun en la beta, WhatsApp los activa poco a poco, cuenta por cuenta.",
+  "waStep4Title": "¿Tienes iPhone?",
+  "waStep4Text": "En iPhone la beta va por TestFlight y casi siempre está llena. Si no la tienes, igual puedes mandar tu creación como video normal: se reproduce con sonido en el chat.",
+  "waStep5Title": "Exporta tu video",
+  "waStep5Text": "En StickSound elige el fondo Blanco o Negro (así sale en MP4, el formato que WhatsApp toma de la galería) y la duración de 5s. Toca la flecha ➜ y guarda el video en tu galería.",
+  "waStep6Title": "Créalo en WhatsApp",
+  "waStep6Text": "En un chat: stickers → «Crear sticker» → elige tu video. Toca el botón de audio arriba del editor y elige «Conservar audio original». Envíalo: tus amigos lo verán en silencio y tocan el ícono de audio para escucharlo."
 }

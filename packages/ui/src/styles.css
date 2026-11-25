@@ -703,6 +703,13 @@ textarea {
   color: var(--text);
 }
 
+.stik-tour-link {
+  align-self: center;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .stik-tour-dots {
   display: flex;
   justify-content: center;
