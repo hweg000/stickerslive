@@ -8,7 +8,6 @@
     "apps/*"
   ],
   "description": "StikSound — Cross-platform sticker sound creator",
-  "packageManager": "pnpm@9.15.0",
   "scripts": {
     "build": "npm run --workspaces --if-present build",
     "test": "vitest run",
