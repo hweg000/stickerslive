@@ -1,5 +1,6 @@
 import { StikSoundError } from "./errors";
 import { LIMITS } from "./limits";
+import { CROP_ZOOM_MAX, CROP_ZOOM_MIN } from "./square-crop";
 import type { ProjectManifest } from "./types";
 
 const ASSET_PATH_PATTERN = /^assets\/[A-Za-z0-9._-]+$/;
@@ -163,6 +164,12 @@ export function validateProjectManifest(raw: unknown): ProjectManifest {
     }
     if (s.edit.matte_color !== undefined && (typeof s.edit.matte_color !== "string" || !HEX_COLOR_PATTERN.test(s.edit.matte_color))) {
       throw new StikSoundError("package-invalid", "Invalid sticker.edit.matte_color.");
+    }
+    if (
+      s.edit.scale !== undefined &&
+      (typeof s.edit.scale !== "number" || !(s.edit.scale >= CROP_ZOOM_MIN && s.edit.scale <= CROP_ZOOM_MAX))
+    ) {
+      throw new StikSoundError("package-invalid", "Invalid sticker.edit.scale.");
     }
     if (s.edit.crop_x !== undefined && (typeof s.edit.crop_x !== "number" || s.edit.crop_x < 0 || s.edit.crop_x > 1)) {
       throw new StikSoundError("package-invalid", "Invalid sticker.edit.crop_x.");

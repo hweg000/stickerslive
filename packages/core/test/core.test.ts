@@ -213,6 +213,25 @@ describe("packages/core domain and use cases", () => {
     const badManifest = structuredClone(project.manifest);
     badManifest.stickers[0]!.file = "assets/../etc/passwd";
     expect(() => validateProjectManifest(badManifest)).toThrowError(/package-invalid/);
+
+    // Crop zoom (edit.scale) from a package must stay in range
+    const zoomed = structuredClone(project.manifest);
+    zoomed.stickers[0]!.edit.scale = 2.5;
+    expect(() => validateProjectManifest(zoomed)).not.toThrow();
+    zoomed.stickers[0]!.edit.scale = 9;
+    expect(() => validateProjectManifest(zoomed)).toThrowError(/package-invalid/);
+  });
+
+  it("square crop zoom: in = smaller movable square, out = margins (negative src), same output size", () => {
+    // Zoom in 2x on 400x200: 100px square, travels the full width and height
+    expect(computeSquareCrop(400, 200, 0, 0, 2)).toEqual({ srcX: 0, srcY: 0, cropSide: 100, outputSize: 200 });
+    expect(computeSquareCrop(400, 200, 1, 1, 2)).toEqual({ srcX: 300, srcY: 100, cropSide: 100, outputSize: 200 });
+    // Zoom out to "contain": 400px square, the 200px-high image is centered with 100px margins
+    expect(computeSquareCrop(400, 200, 0.5, 0.5, 0.5)).toEqual({ srcX: 0, srcY: -100, cropSide: 400, outputSize: 200 });
+    // Out-of-range zoom is clamped to [0.25, 4]; zoom 1 keeps the old behaviour
+    expect(computeSquareCrop(400, 400, 0.5, 0.5, 100).cropSide).toBe(100);
+    expect(computeSquareCrop(400, 400, 0.5, 0.5, 0.01).cropSide).toBe(1600);
+    expect(computeSquareCrop(1000, 500, 1, 0.5, 1)).toEqual(computeSquareCrop(1000, 500, 1, 0.5));
   });
 
   it("computes 1:1 square crop from center by default and respects input-driven resolution <= 512", () => {

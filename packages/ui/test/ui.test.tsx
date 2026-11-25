@@ -405,4 +405,75 @@ describe("StikSoundMinimalApp UI", () => {
     await waitFor(() => expect(gifSource.download).toHaveBeenCalledWith(gif));
     await waitFor(() => expect(screen.getByTestId("sticker-zone").className).toContain("has-sticker"));
   });
+
+  it("framing: zoom slider, reset, and drag-to-pan move the preview exactly like the export crop", async () => {
+    // Preview <img> only renders with object URLs; jsdom lacks them.
+    const origCreate = URL.createObjectURL;
+    const origRevoke = URL.revokeObjectURL;
+    URL.createObjectURL = vi.fn(() => "blob:test");
+    URL.revokeObjectURL = vi.fn();
+    // jsdom has no PointerEvent, so fireEvent.pointer* would drop clientX/pointerId.
+    const hadPointerEvent = "PointerEvent" in window;
+    if (!hadPointerEvent) {
+      class TestPointerEvent extends MouseEvent {
+        pointerId: number;
+        constructor(type: string, init: PointerEventInit = {}) {
+          super(type, init);
+          this.pointerId = init.pointerId ?? 0;
+        }
+      }
+      (window as unknown as { PointerEvent: unknown }).PointerEvent = TestPointerEvent;
+    }
+    try {
+      const gif = { title: "cat", preview_url: "https://media.tenor.com/aAAAAM/c.gif", gif_url: "https://media.tenor.com/aAAAAd/c.gif" };
+      render(
+        <StikSoundMinimalApp
+          engine={createTestEngine(800, 400, true)}
+          shell={{ saveArtifact: vi.fn() }}
+          initialLocale="es"
+          gifSource={{ search: async () => [gif], download: async () => new Uint8Array([0x47, 0x49, 0x46, 0x38]) }}
+        />
+      );
+      fireEvent.click(screen.getByTestId("browse-gifs-btn"));
+      await waitFor(() => expect(screen.getByTestId("gif-item")).toBeTruthy());
+      fireEvent.click(screen.getByTestId("gif-item"));
+      await waitFor(() => expect(screen.getByTestId("zoom-slider")).toBeTruthy());
+
+      const img = () => screen.getByTestId("sticker-zone").querySelector("img") as HTMLImageElement;
+      // 800x400 at zoom 1, centred: 400px square -> image is 200% wide, shifted -50%
+      expect(img().style.width).toBe("200%");
+      expect(img().style.left).toBe("-50%");
+
+      // Zoom 2x (slider is log2): 200px square -> 400% wide
+      fireEvent.change(screen.getByTestId("zoom-slider"), { target: { value: "1" } });
+      expect(img().style.width).toBe("400%");
+      fireEvent.click(screen.getByTestId("crop-reset-btn"));
+      expect(img().style.width).toBe("200%");
+
+      // Drag 50px right on a 200px preview box -> 100 source px -> anchor 0.5 -> 0.25 -> left -25%
+      const box = screen.getByTestId("sticker-zone").querySelector(".stik-preview-box") as HTMLElement;
+      box.getBoundingClientRect = () => ({ width: 200, height: 200, top: 0, left: 0, right: 200, bottom: 200, x: 0, y: 0, toJSON: () => ({}) });
+      const stage = screen.getByTestId("sticker-zone");
+      fireEvent.pointerDown(stage, { pointerId: 1, clientX: 100, clientY: 100 });
+      fireEvent.pointerMove(stage, { pointerId: 1, clientX: 150, clientY: 100 });
+      fireEvent.pointerUp(stage, { pointerId: 1, clientX: 150, clientY: 100 });
+      expect(img().style.left).toBe("-25%");
+
+      // Hover without a pressed pointer no longer moves the crop
+      fireEvent.pointerMove(stage, { pointerId: 2, clientX: 0, clientY: 0 });
+      expect(img().style.left).toBe("-25%");
+
+      // Pinch: fingers 40px apart spread to 80px -> zoom 1 -> 2 -> image 400% wide
+      fireEvent.pointerDown(stage, { pointerId: 3, clientX: 100, clientY: 100 });
+      fireEvent.pointerDown(stage, { pointerId: 4, clientX: 140, clientY: 100 });
+      fireEvent.pointerMove(stage, { pointerId: 4, clientX: 180, clientY: 100 });
+      fireEvent.pointerUp(stage, { pointerId: 4 });
+      fireEvent.pointerUp(stage, { pointerId: 3 });
+      expect(img().style.width).toBe("400%");
+    } finally {
+      URL.createObjectURL = origCreate;
+      URL.revokeObjectURL = origRevoke;
+      if (!hadPointerEvent) delete (window as unknown as { PointerEvent?: unknown }).PointerEvent;
+    }
+  });
 });

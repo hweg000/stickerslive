@@ -22,19 +22,22 @@ export function cropAndFitSquareRgba(
   srcWidth: number,
   srcHeight: number,
   cropX = 0.5,
-  cropY = 0.5
+  cropY = 0.5,
+  zoom = 1
 ): RgbaFrame512 {
-  const { srcX, srcY, cropSide, outputSize } = computeSquareCrop(srcWidth, srcHeight, cropX, cropY);
-  const out = new Uint8Array(outputSize * outputSize * 4);
+  const { srcX, srcY, cropSide, outputSize } = computeSquareCrop(srcWidth, srcHeight, cropX, cropY, zoom);
+  const out = new Uint8Array(outputSize * outputSize * 4); // zero = transparent, kept outside the image
 
   for (let y = 0; y < outputSize; y++) {
     const sy = srcY + ((y + 0.5) * cropSide) / outputSize - 0.5;
+    if (sy < -0.5 || sy > srcHeight - 0.5) continue; // zoomed out past the image edge
     const y0 = Math.max(0, Math.min(srcHeight - 1, Math.floor(sy)));
     const y1 = Math.max(0, Math.min(srcHeight - 1, y0 + 1));
     const fy = Math.max(0, sy - y0);
 
     for (let x = 0; x < outputSize; x++) {
       const sx = srcX + ((x + 0.5) * cropSide) / outputSize - 0.5;
+      if (sx < -0.5 || sx > srcWidth - 0.5) continue;
       const x0 = Math.max(0, Math.min(srcWidth - 1, Math.floor(sx)));
       const x1 = Math.max(0, Math.min(srcWidth - 1, x0 + 1));
       const fx = Math.max(0, sx - x0);

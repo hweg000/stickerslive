@@ -98,9 +98,10 @@ export function drawCroppedFrame(
   video: OpenedVideo,
   cropX: number,
   cropY: number,
-  matteColor: string | null
+  matteColor: string | null,
+  zoom = 1
 ): number {
-  const crop = computeSquareCrop(video.width, video.height, cropX, cropY);
+  const crop = computeSquareCrop(video.width, video.height, cropX, cropY, zoom);
   if (matteColor) {
     ctx.fillStyle = matteColor;
     ctx.fillRect(0, 0, crop.outputSize, crop.outputSize);

@@ -176,6 +176,8 @@ export interface VideoRenderRequest {
   matteColor: string;
   cropX?: number;
   cropY?: number;
+  /** Zoom of the square crop (StickerEdit.scale); see computeSquareCrop. */
+  cropZoom?: number;
   container: "mp4" | "webm-alpha";
 }
 

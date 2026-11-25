@@ -13,7 +13,7 @@
   "modeWhite": "白色",
   "modeBlack": "黑色",
   "modeCustom": "自定义颜色",
-  "hoverCropHint": "移动鼠标调整 1:1 裁剪区域",
+  "hoverCropHint": "拖动以移动 · 滚轮缩放",
   "downloadChooseFormat": "选择下载格式：",
   "downloadFmtMp4": "MP4 视频（5 秒或 10 秒 · 方形 · 含音频）",
   "downloadFmtWebm": "高质量 / 透明 WebM（5 秒或 10 秒）",
@@ -61,5 +61,7 @@
   "gifSearchPlaceholder": "Search GIFs… (empty = memes)",
   "gifEmpty": "No GIFs found.",
   "gifError": "Could not load Tenor. Check your connection.",
-  "uploadStickerBtn": "📁 Upload file"
+  "uploadStickerBtn": "📁 Upload file",
+  "zoomLabel": "Sticker zoom",
+  "cropReset": "Reset"
 }

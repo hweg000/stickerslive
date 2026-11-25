@@ -133,6 +133,18 @@ describe("packages/media-web", () => {
     expect(matted[3]).toBe(255);
   });
 
+  it("zoomed-out crop leaves transparent margins instead of stretching edge pixels", () => {
+    // Fully opaque 8x4 image, zoom 0.5 -> 8x8 square (image centred, 2px margins), output 4x4
+    const src2 = new Uint8Array(8 * 4 * 4).fill(255);
+    const out2 = cropAndFitSquareRgba(src2, 8, 4, 0.5, 0.5, 0.5);
+    expect(out2.width).toBe(4);
+    const alphaAtRow = (row: number) => out2.data[(row * 4 + 1) * 4 + 3];
+    expect(alphaAtRow(0)).toBe(0); // top margin
+    expect(alphaAtRow(1)).toBe(255); // image
+    expect(alphaAtRow(2)).toBe(255);
+    expect(alphaAtRow(3)).toBe(0); // bottom margin
+  });
+
   it("schedules looping GIF frames across exact 10-second video duration", () => {
     const schedule = scheduleGifFramesForDuration(
       [

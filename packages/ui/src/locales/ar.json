@@ -13,7 +13,7 @@
   "modeWhite": "أبيض",
   "modeBlack": "أسود",
   "modeCustom": "لون",
-  "hoverCropHint": "حرّك الفأرة لضبط القص 1:1",
+  "hoverCropHint": "اسحب للتحريك · العجلة للتكبير",
   "downloadChooseFormat": "اختر صيغة التنزيل:",
   "downloadFmtMp4": "فيديو MP4 (5 أو 10 ثوانٍ · مربع · مع صوت)",
   "downloadFmtWebm": "فيديو WebM عالي الجودة / شفاف (5 أو 10 ثوانٍ)",
@@ -61,5 +61,7 @@
   "gifSearchPlaceholder": "Search GIFs… (empty = memes)",
   "gifEmpty": "No GIFs found.",
   "gifError": "Could not load Tenor. Check your connection.",
-  "uploadStickerBtn": "📁 Upload file"
+  "uploadStickerBtn": "📁 Upload file",
+  "zoomLabel": "Sticker zoom",
+  "cropReset": "Reset"
 }

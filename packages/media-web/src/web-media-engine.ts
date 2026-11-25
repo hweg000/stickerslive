@@ -102,7 +102,7 @@ export function sanitizeMp4AudioChunkMeta(
  * for non-alpha exports) without requiring DOM/ImageDecoder support.
  */
 export function prepareAnimatedGifFrames(
-  request: Pick<VideoRenderRequest, "stickerBytes" | "cropX" | "cropY" | "container" | "matteColor">
+  request: Pick<VideoRenderRequest, "stickerBytes" | "cropX" | "cropY" | "cropZoom" | "container" | "matteColor">
 ): DecodedGifFrame[] {
   const decoded = decodeGifFramesRgba(request.stickerBytes);
   const isWebm = request.container === "webm-alpha";
@@ -111,7 +111,7 @@ export function prepareAnimatedGifFrames(
   const prepared: DecodedGifFrame[] = [];
 
   for (const frame of decoded) {
-    const cropped = cropAndFitSquareRgba(frame.rgba, frame.width, frame.height, cropX, cropY);
+    const cropped = cropAndFitSquareRgba(frame.rgba, frame.width, frame.height, cropX, cropY, request.cropZoom ?? 1);
     const rgba = isWebm ? cropped.data : compositeRgbaOnMatte(cropped, request.matteColor);
     prepared.push({
       width: cropped.width,
@@ -203,7 +203,7 @@ export class WebMediaEngine implements MediaEngine {
         canvas.height = size;
         const ctx = canvas.getContext("2d");
         if (!ctx) throw new StikSoundError("encode-failed", "2D context unavailable.");
-        drawCroppedFrame(ctx, video, edit.crop_x ?? 0.5, edit.crop_y ?? 0.5, null);
+        drawCroppedFrame(ctx, video, edit.crop_x ?? 0.5, edit.crop_y ?? 0.5, null, edit.scale ?? 1);
         const imageData = ctx.getImageData(0, 0, size, size);
         return { width: size, height: size, data: new Uint8Array(imageData.data) };
       } finally {
@@ -212,7 +212,7 @@ export class WebMediaEngine implements MediaEngine {
     }
 
     const info = sniffImageHeader(bytes);
-    const crop = computeSquareCrop(info.width, info.height, edit.crop_x ?? 0.5, edit.crop_y ?? 0.5);
+    const crop = computeSquareCrop(info.width, info.height, edit.crop_x ?? 0.5, edit.crop_y ?? 0.5, edit.scale ?? 1);
 
     if (typeof OffscreenCanvas !== "undefined" && typeof createImageBitmap !== "undefined") {
       const mime = `image/${info.format}`;
@@ -244,7 +244,8 @@ export class WebMediaEngine implements MediaEngine {
       info.width,
       info.height,
       edit.crop_x ?? 0.5,
-      edit.crop_y ?? 0.5
+      edit.crop_y ?? 0.5,
+      edit.scale ?? 1
     );
   }
 
@@ -356,7 +357,7 @@ export class WebMediaEngine implements MediaEngine {
     ) {
       const isWebm = request.container === "webm-alpha";
       const size = await this.stickerSize(request);
-      const crop = computeSquareCrop(size.width, size.height, request.cropX ?? 0.5, request.cropY ?? 0.5);
+      const crop = computeSquareCrop(size.width, size.height, request.cropX ?? 0.5, request.cropY ?? 0.5, request.cropZoom ?? 1);
 
       const videoCandidates: ExtendedVideoEncoderConfig[] = isWebm
         ? [
@@ -633,7 +634,7 @@ export class WebMediaEngine implements MediaEngine {
       let index = 0;
       for (let t = 0; t < totalUs; t += stepUs, index++) {
         await seekVideo(video.el, clipTimeSec(request.videoOffsetMs ?? 0, t / 1000, video.durationMs));
-        drawCroppedFrame(ctx, video, request.cropX ?? 0.5, request.cropY ?? 0.5, matte);
+        drawCroppedFrame(ctx, video, request.cropX ?? 0.5, request.cropY ?? 0.5, matte, request.cropZoom ?? 1);
         const frame = new VideoFrame(canvas, { timestamp: t, duration: Math.min(stepUs, totalUs - t) });
         encoder.encode(frame, { keyFrame: index % 24 === 0 });
         frame.close();
@@ -666,7 +667,7 @@ export class WebMediaEngine implements MediaEngine {
       const pcm = this.padPcmToDuration(rawPcm, durationMs);
 
       const size = await this.stickerSize(request);
-      const crop = computeSquareCrop(size.width, size.height, request.cropX ?? 0.5, request.cropY ?? 0.5);
+      const crop = computeSquareCrop(size.width, size.height, request.cropX ?? 0.5, request.cropY ?? 0.5, request.cropZoom ?? 1);
       const canvas = document.createElement("canvas");
       canvas.width = crop.outputSize;
       canvas.height = crop.outputSize;
@@ -736,7 +737,7 @@ export class WebMediaEngine implements MediaEngine {
 
       const drawSticker = () => {
         if (clip) {
-          drawCroppedFrame(ctx, clip, request.cropX ?? 0.5, request.cropY ?? 0.5, isWebm ? null : request.matteColor);
+          drawCroppedFrame(ctx, clip, request.cropX ?? 0.5, request.cropY ?? 0.5, isWebm ? null : request.matteColor, request.cropZoom ?? 1);
         } else if (gifImageDatas && gifImageDatas.length > 0) {
           const elapsed = (performance.now() - startedAt) % gifCycleMs;
           let idx = 0;
@@ -863,7 +864,7 @@ export class WebMediaEngine implements MediaEngine {
         for (let i = 0; i < count; i++) {
           const res = await decoder.decode({ frameIndex: i });
           const vf = res.image;
-          const crop = computeSquareCrop(vf.displayWidth, vf.displayHeight, cropX, cropY);
+          const crop = computeSquareCrop(vf.displayWidth, vf.displayHeight, cropX, cropY, request.cropZoom ?? 1);
           const c = new OffscreenCanvas(crop.outputSize, crop.outputSize);
           const ctx = c.getContext("2d")!;
           if (!isWebm) {
@@ -906,7 +907,7 @@ export class WebMediaEngine implements MediaEngine {
       fit: "contain",
       offset_x: 0,
       offset_y: 0,
-      scale: 1,
+      scale: request.cropZoom ?? 1,
       stroke: "none",
       matte_color: request.matteColor,
       crop_x: cropX,

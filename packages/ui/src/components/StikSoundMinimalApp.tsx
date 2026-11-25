@@ -7,6 +7,9 @@ import {
   ProjectController,
   SUPPORTED_LOCALES,
   computeSquareCrop,
+  clampCropZoom,
+  CROP_ZOOM_MAX,
+  CROP_ZOOM_MIN,
   createProject,
   formatError,
   isVideoFormat,
@@ -567,33 +570,104 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
     });
   };
 
-  // Zero-click hover cropping when image is not already 1:1.
-  // Pointer events cover the mouse (hover) and touch (finger drag, see .crop-enabled CSS).
-  const canCrop = Boolean(sticker) && sticker!.width !== sticker!.height;
-  const handleStagePointerMove = (e: React.PointerEvent<HTMLElement>) => {
-    if (!sticker || sticker.width === sticker.height) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    if (rect.width <= 0 || rect.height <= 0) return;
-    const nx = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    const ny = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-    setReadyArtifact(null);
-    setProject((prev) =>
-      controller.updateStickerEdit(prev, {
-        crop_x: Number(nx.toFixed(3)),
-        crop_y: Number(ny.toFixed(3))
-      })
-    );
-  };
-
   const isTransparentSelected = allowTransparent && activeProfile === "video-webm-alpha";
   const currentMatte = sticker?.edit.matte_color ?? LIMITS.DEFAULT_MATTE_COLOR;
   const cropX = sticker?.edit.crop_x ?? 0.5;
   const cropY = sticker?.edit.crop_y ?? 0.5;
-  const squareMeta = sticker ? computeSquareCrop(sticker.width, sticker.height, cropX, cropY) : null;
+  const cropZoom = sticker?.edit.scale ?? 1;
+  const squareMeta = sticker ? computeSquareCrop(sticker.width, sticker.height, cropX, cropY, cropZoom) : null;
+  // Zoomed out, the square has empty margins: they need a background choice like real alpha does.
+  const hasEmptyArea = Boolean(sticker) && (sticker!.has_alpha || cropZoom < 1);
   const stageBgStyle =
-    sticker && !isTransparentSelected && (activeProfile === "video-mp4" || !sticker.has_alpha)
+    sticker && !isTransparentSelected && (activeProfile === "video-mp4" || !hasEmptyArea)
       ? { backgroundImage: "none", backgroundColor: currentMatte }
       : undefined;
+
+  // Mirrors computeSquareCrop exactly, so the preview is what gets exported.
+  const previewStyle: React.CSSProperties | undefined =
+    sticker && squareMeta
+      ? {
+          position: "absolute",
+          maxWidth: "none",
+          objectFit: "fill",
+          pointerEvents: "none",
+          width: `${(sticker.width / squareMeta.cropSide) * 100}%`,
+          height: `${(sticker.height / squareMeta.cropSide) * 100}%`,
+          left: `${(-squareMeta.srcX / squareMeta.cropSide) * 100}%`,
+          top: `${(-squareMeta.srcY / squareMeta.cropSide) * 100}%`
+        }
+      : undefined;
+
+  const applyCrop = (nx: number, ny: number, zoom: number) => {
+    const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+    setReadyArtifact(null);
+    setProject((prev) =>
+      controller.updateStickerEdit(prev, {
+        crop_x: Number(clamp01(nx).toFixed(3)),
+        crop_y: Number(clamp01(ny).toFixed(3)),
+        scale: Number(clampCropZoom(zoom).toFixed(3))
+      })
+    );
+  };
+
+  // Framing gestures: one pointer (finger or mouse) pans, two fingers pinch-zoom, the wheel zooms.
+  // The gesture re-bases whenever a finger is added or lifted, so the crop never jumps.
+  const previewBoxRef = useRef<HTMLDivElement | null>(null);
+  const gesture = useRef({
+    pointers: new Map<number, { x: number; y: number }>(),
+    start: null as null | { cropX: number; cropY: number; zoom: number; mid: { x: number; y: number }; dist: number },
+    moved: false
+  });
+  const rebaseGesture = () => {
+    const pts = [...gesture.current.pointers.values()];
+    if (pts.length === 0) {
+      gesture.current.start = null;
+      return;
+    }
+    const mid = { x: pts.reduce((s, p) => s + p.x, 0) / pts.length, y: pts.reduce((s, p) => s + p.y, 0) / pts.length };
+    const dist = pts.length >= 2 ? Math.hypot(pts[0]!.x - pts[1]!.x, pts[0]!.y - pts[1]!.y) : 0;
+    gesture.current.start = { cropX, cropY, zoom: cropZoom, mid, dist };
+  };
+  const handleStagePointerDown = (e: React.PointerEvent<HTMLElement>) => {
+    if (!sticker) return;
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    if (gesture.current.pointers.size === 0) gesture.current.moved = false;
+    gesture.current.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    rebaseGesture();
+  };
+  const handleStagePointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    const g = gesture.current;
+    if (!sticker || !g.start || !g.pointers.has(e.pointerId)) return; // plain hover does nothing
+    g.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const boxPx = previewBoxRef.current?.getBoundingClientRect().width ?? 0;
+    if (boxPx <= 0) return;
+    const pts = [...g.pointers.values()];
+    const mid = { x: pts.reduce((s, p) => s + p.x, 0) / pts.length, y: pts.reduce((s, p) => s + p.y, 0) / pts.length };
+    const dx = mid.x - g.start.mid.x;
+    const dy = mid.y - g.start.mid.y;
+    if (Math.hypot(dx, dy) > 4) g.moved = true;
+    let zoom = g.start.zoom;
+    if (pts.length >= 2 && g.start.dist > 0) {
+      zoom = clampCropZoom(g.start.zoom * (Math.hypot(pts[0]!.x - pts[1]!.x, pts[0]!.y - pts[1]!.y) / g.start.dist));
+      g.moved = true;
+    }
+    // Screen px -> source px, then -> change of the normalized anchor (room = how far the square can travel).
+    const { cropSide } = computeSquareCrop(sticker.width, sticker.height, 0.5, 0.5, zoom);
+    const srcPerScreen = cropSide / boxPx;
+    const roomX = sticker.width - cropSide;
+    const roomY = sticker.height - cropSide;
+    const nx = Math.abs(roomX) < 1 ? 0.5 : g.start.cropX - (dx * srcPerScreen) / roomX;
+    const ny = Math.abs(roomY) < 1 ? 0.5 : g.start.cropY - (dy * srcPerScreen) / roomY;
+    applyCrop(nx, ny, zoom);
+  };
+  const handleStagePointerEnd = (e: React.PointerEvent<HTMLElement>) => {
+    gesture.current.pointers.delete(e.pointerId);
+    rebaseGesture();
+  };
+  const handleStageWheel = (e: React.WheelEvent<HTMLElement>) => {
+    if (!sticker) return;
+    applyCrop(cropX, cropY, cropZoom * Math.exp(-e.deltaY * 0.0015));
+  };
 
   return (
     <div
@@ -840,9 +914,13 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
       ) : (
         <main
           data-testid="sticker-zone"
-          className={`stik-sticker-stage ${sticker ? "has-sticker" : "empty"}${canCrop ? " crop-enabled" : ""}`}
+          className={`stik-sticker-stage ${sticker ? "has-sticker crop-enabled" : "empty"}`}
           style={stageBgStyle}
+          onPointerDown={handleStagePointerDown}
           onPointerMove={handleStagePointerMove}
+          onPointerUp={handleStagePointerEnd}
+          onPointerCancel={handleStagePointerEnd}
+          onWheel={handleStageWheel}
           onDragOver={(e) => e.preventDefault()}
           onDrop={async (e) => {
             e.preventDefault();
@@ -855,6 +933,10 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             }
           }}
           onClick={() => {
+            if (gesture.current.moved) {
+              gesture.current.moved = false; // the tap ended a drag/pinch, not a play toggle
+              return;
+            }
             if (!sticker) stickerFileInputRef.current?.click();
             else if (audio) togglePlay();
           }}
@@ -895,7 +977,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               <p className="stik-empty-hint">{copy.stickerDropHint}</p>
             </div>
           ) : (
-            <div className="stik-preview-box">
+            <div className="stik-preview-box" ref={previewBoxRef}>
               {stickerPreviewUrl && stickerIsVideo ? (
                 <video
                   ref={(el) => {
@@ -915,20 +997,15 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
                   loop
                   playsInline
                   aria-label={sticker.source_name}
-                  style={{
-                    objectFit: "cover",
-                    objectPosition: `${Math.round(cropX * 100)}% ${Math.round(cropY * 100)}%`
-                  }}
+                  style={previewStyle}
                 />
               ) : stickerPreviewUrl ? (
                 <img
                   src={stickerPreviewUrl}
                   alt={sticker.source_name}
                   className="stik-sticker-img"
-                  style={{
-                    objectFit: "cover",
-                    objectPosition: `${Math.round(cropX * 100)}% ${Math.round(cropY * 100)}%`
-                  }}
+                  draggable={false}
+                  style={previewStyle}
                 />
               ) : (
                 <div data-testid="sticker-loaded-badge" className="stik-sticker-fallback">
@@ -937,8 +1014,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               )}
               {squareMeta && (
                 <span data-testid="resolution-pill" className="stik-res-badge">
-                  1:1 · {squareMeta.outputSize}×{squareMeta.outputSize}
-                  {sticker.width !== sticker.height ? ` · ${copy.hoverCropHint}` : ""}
+                  1:1 · {squareMeta.outputSize}×{squareMeta.outputSize} · {copy.hoverCropHint}
                 </span>
               )}
               {audio && (
@@ -951,7 +1027,33 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         </main>
       )}
 
-      {!readyArtifact && sticker && sticker.has_alpha && (
+      {!readyArtifact && sticker && (
+        <div className="stik-zoom-bar">
+          <span aria-hidden="true">🔍</span>
+          <input
+            type="range"
+            data-testid="zoom-slider"
+            className="stik-trim-slider stik-zoom-slider"
+            aria-label={copy.zoomLabel}
+            // log2 scale: 1x sits in the middle, zooming in and out feel symmetric
+            min={Math.log2(CROP_ZOOM_MIN)}
+            max={Math.log2(CROP_ZOOM_MAX)}
+            step={0.01}
+            value={Math.log2(cropZoom)}
+            onChange={(e) => applyCrop(cropX, cropY, 2 ** Number(e.target.value))}
+          />
+          <button
+            type="button"
+            data-testid="crop-reset-btn"
+            className="stik-trans-chip"
+            onClick={() => applyCrop(0.5, 0.5, 1)}
+          >
+            {copy.cropReset}
+          </button>
+        </div>
+      )}
+
+      {!readyArtifact && sticker && hasEmptyArea && (
         <div className="stik-transparency-bar" data-testid="transparency-picker">
           <span className="stik-trans-label">{copy.transparencyLabel}</span>
           {allowTransparent && (

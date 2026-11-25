@@ -118,10 +118,10 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
       "Versión web. Todo se procesa en tu teléfono; nada se sube a internet. Para usar un sonido de MyInstants, descárgalo primero desde Safari y luego elígelo con el botón de audio. El video dura como máximo 5 o 10 segundos, según el botón de la barra (por defecto, 10).",
     ...(isTouch
       ? {
-          stickerDropTitle: "Toca para elegir tu sticker",
-          stickerDropHint: "Foto, GIF o video corto desde Fotos o Archivos",
-          hoverCropHint: "Arrastra para encuadrar"
-        }
+        stickerDropTitle: "Toca para elegir tu sticker",
+        stickerDropHint: "Foto, GIF o video corto desde Fotos o Archivos",
+        hoverCropHint: "Arrastra para mover · pellizca para zoom"
+      }
       : { stickerDropHint: "Arrastra o haz clic: PNG, GIF, WebP, JPG o video corto (MP4, MOV)" })
   },
   en: {
@@ -138,10 +138,10 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
       "Web version. Everything runs on your phone; nothing is uploaded. To use a MyInstants sound, download it in Safari first, then pick it with the sound button. The video is at most 5 or 10 seconds, chosen with the bar button (10 by default).",
     ...(isTouch
       ? {
-          stickerDropTitle: "Tap to choose your sticker",
-          stickerDropHint: "Photo, GIF or short video from Photos or Files",
-          hoverCropHint: "Drag to frame"
-        }
+        stickerDropTitle: "Tap to choose your sticker",
+        stickerDropHint: "Photo, GIF or short video from Photos or Files",
+        hoverCropHint: "Drag to move · pinch to zoom"
+      }
       : { stickerDropHint: "Drop or click: PNG, GIF, WebP, JPG or a short video (MP4, MOV)" })
   },
   pt: {
@@ -158,10 +158,10 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
       "Versão web. Tudo é processado no seu aparelho; nada é enviado à internet. Para usar um som do MyInstants, baixe o arquivo primeiro e escolha-o pelo botão de áudio. O vídeo dura no máximo 5 ou 10 segundos (10 por padrão).",
     ...(isTouch
       ? {
-          stickerDropTitle: "Toque para escolher seu sticker",
-          stickerDropHint: "Foto, GIF ou vídeo curto de Fotos ou Arquivos",
-          hoverCropHint: "Arraste para enquadrar"
-        }
+        stickerDropTitle: "Toque para escolher seu sticker",
+        stickerDropHint: "Foto, GIF ou vídeo curto de Fotos ou Arquivos",
+        hoverCropHint: "Arraste para enquadrar"
+      }
       : { stickerDropHint: "Arraste ou clique: PNG, GIF, WebP, JPG ou vídeo curto (MP4, MOV)" })
   },
   fr: {
@@ -178,10 +178,10 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
       "Version web. Tout est traité sur votre appareil ; rien n'est envoyé en ligne. Pour utiliser un son MyInstants, téléchargez-le d'abord puis sélectionnez-le avec le bouton audio. Durée max : 5 ou 10 s (10 par défaut).",
     ...(isTouch
       ? {
-          stickerDropTitle: "Touchez pour choisir votre sticker",
-          stickerDropHint: "Photo, GIF ou courte vidéo depuis Photos ou Fichiers",
-          hoverCropHint: "Glissez pour cadrer"
-        }
+        stickerDropTitle: "Touchez pour choisir votre sticker",
+        stickerDropHint: "Photo, GIF ou courte vidéo depuis Photos ou Fichiers",
+        hoverCropHint: "Glissez pour cadrer"
+      }
       : { stickerDropHint: "Déposez ou cliquez : PNG, GIF, WebP, JPG ou courte vidéo (MP4, MOV)" })
   },
   de: {
@@ -198,10 +198,10 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
       "Web-Version. Alles läuft lokal auf deinem Gerät; nichts wird hochgeladen. Für MyInstants-Sounds lade die MP3-Datei zuerst herunter und wähle sie über den Audio-Button. Maximale Videolänge: 5 oder 10 Sekunden (Standard: 10).",
     ...(isTouch
       ? {
-          stickerDropTitle: "Tippe, um deinen Sticker zu wählen",
-          stickerDropHint: "Foto, GIF oder kurzes Video aus Fotos oder Dateien",
-          hoverCropHint: "Zum Zuschneiden ziehen"
-        }
+        stickerDropTitle: "Tippe, um deinen Sticker zu wählen",
+        stickerDropHint: "Foto, GIF oder kurzes Video aus Fotos oder Dateien",
+        hoverCropHint: "Zum Zuschneiden ziehen"
+      }
       : { stickerDropHint: "Ablegen oder klicken: PNG, GIF, WebP, JPG oder kurzes Video (MP4, MOV)" })
   },
   it: {
@@ -218,10 +218,10 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
       "Versione web. Tutto viene elaborato sul dispositivo; nulla viene caricato online. Per usare un audio di MyInstants, scaricalo prima e selezionalo dal pulsante audio. Durata massima: 5 o 10 secondi (10 predefinito).",
     ...(isTouch
       ? {
-          stickerDropTitle: "Tocca per scegliere lo sticker",
-          stickerDropHint: "Foto, GIF o breve video da Foto o File",
-          hoverCropHint: "Trascina per inquadrare"
-        }
+        stickerDropTitle: "Tocca per scegliere lo sticker",
+        stickerDropHint: "Foto, GIF o breve video da Foto o File",
+        hoverCropHint: "Trascina per inquadrare"
+      }
       : { stickerDropHint: "Trascina o clicca: PNG, GIF, WebP, JPG o breve video (MP4, MOV)" })
   },
   ru: {
@@ -238,10 +238,10 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
       "Веб-версия. Всё обрабатывается на вашем устройстве; ничего не загружается в сеть. Чтобы использовать звук с MyInstants, сначала скачайте его и выберите кнопкой аудио. Максимум 5 или 10 с (по умолчанию 10).",
     ...(isTouch
       ? {
-          stickerDropTitle: "Нажмите, чтобы выбрать стикер",
-          stickerDropHint: "Фото, GIF или короткое видео из Фото или Файлов",
-          hoverCropHint: "Потяните для кадрирования"
-        }
+        stickerDropTitle: "Нажмите, чтобы выбрать стикер",
+        stickerDropHint: "Фото, GIF или короткое видео из Фото или Файлов",
+        hoverCropHint: "Потяните для кадрирования"
+      }
       : { stickerDropHint: "Перетащите или нажмите: PNG, GIF, WebP, JPG или короткое видео (MP4, MOV)" })
   },
   zh: {
@@ -258,10 +258,10 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
       "网页版。所有处理均在本地设备完成，不会上传任何数据。如需使用 MyInstants 音效，请先在浏览器中下载后，再通过音频按钮选择。最长 5 秒或 10 秒（默认 10 秒）。",
     ...(isTouch
       ? {
-          stickerDropTitle: "轻点以选择贴纸",
-          stickerDropHint: "从“照片”或“文件”选择图片、GIF 或短视频",
-          hoverCropHint: "拖动以调整构图"
-        }
+        stickerDropTitle: "轻点以选择贴纸",
+        stickerDropHint: "从“照片”或“文件”选择图片、GIF 或短视频",
+        hoverCropHint: "拖动以调整构图"
+      }
       : { stickerDropHint: "拖入或点击：PNG、GIF、WebP、JPG 或短视频 (MP4, MOV)" })
   },
   ar: {
@@ -278,10 +278,10 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
       "نسخة الويب. تتم المعالجة بالكامل على جهازك ولا يُرفع شيء إلى الإنترنت. لاستخدام صوت من MyInstants، نزّله أولاً ثم اختره عبر زر الصوت. المدة القصوى 5 أو 10 ثوانٍ (10 افتراضيًا).",
     ...(isTouch
       ? {
-          stickerDropTitle: "اضغط لاختيار الملصق",
-          stickerDropHint: "صورة أو GIF أو فيديو قصير من الصور أو الملفات",
-          hoverCropHint: "اسحب لضبط الإطار"
-        }
+        stickerDropTitle: "اضغط لاختيار الملصق",
+        stickerDropHint: "صورة أو GIF أو فيديو قصير من الصور أو الملفات",
+        hoverCropHint: "اسحب لضبط الإطار"
+      }
       : { stickerDropHint: "أسقط أو انقر: PNG أو GIF أو WebP أو JPG أو فيديو قصير (MP4, MOV)" })
   }
 };

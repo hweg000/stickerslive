@@ -298,6 +298,24 @@ textarea {
   border-radius: 12px;
 }
 
+/* Marks the exported square; zoomed out, the margins around the image are part of the sticker */
+.stik-sticker-stage.has-sticker .stik-preview-box {
+  outline: 1px dashed rgba(167, 139, 250, 0.55);
+  outline-offset: 0;
+}
+
+.stik-zoom-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.stik-zoom-slider {
+  flex: 1;
+  min-width: 0;
+}
+
 .stik-sticker-img {
   width: 100%;
   height: 100%;

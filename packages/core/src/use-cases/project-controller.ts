@@ -662,6 +662,7 @@ export class ProjectController {
       matteColor: sticker.edit.matte_color ?? LIMITS.DEFAULT_MATTE_COLOR,
       cropX: sticker.edit.crop_x ?? 0.5,
       cropY: sticker.edit.crop_y ?? 0.5,
+      cropZoom: sticker.edit.scale ?? 1,
       container: profileId === "video-webm-alpha" ? "webm-alpha" : "mp4"
     });
 

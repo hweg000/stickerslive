@@ -13,7 +13,7 @@
   "modeWhite": "Белый",
   "modeBlack": "Чёрный",
   "modeCustom": "Цвет",
-  "hoverCropHint": "Наведите мышь для кадрирования 1:1",
+  "hoverCropHint": "Перетащите для сдвига · колесо для масштаба",
   "downloadChooseFormat": "Выберите формат загрузки:",
   "downloadFmtMp4": "Видео MP4 (5 с или 10 с · квадрат · со звуком)",
   "downloadFmtWebm": "WebM Высокое качество / Прозрачный (5 с или 10 с)",
@@ -61,5 +61,7 @@
   "gifSearchPlaceholder": "Search GIFs… (empty = memes)",
   "gifEmpty": "No GIFs found.",
   "gifError": "Could not load Tenor. Check your connection.",
-  "uploadStickerBtn": "📁 Upload file"
+  "uploadStickerBtn": "📁 Upload file",
+  "zoomLabel": "Sticker zoom",
+  "cropReset": "Reset"
 }
