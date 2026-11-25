@@ -35,6 +35,7 @@ import { TimelineTrimBar } from "./TimelineTrimBar";
 import { SoundBrowser, type SoundSearchFn } from "./SoundBrowser";
 import { GifBrowser, type GifSearchResult, type GifSource } from "./GifBrowser";
 import { MAX_RECORDING_MS, canRecordAudio, startRecording, type ActiveRecording } from "./recording";
+import { Tour, hasSeenTour, markTourSeen } from "./Tour";
 
 export type ShareOutcome = "shared" | "cancelled" | "needs-tap";
 
@@ -75,6 +76,8 @@ export interface StikSoundMinimalAppProps {
   soundSearch?: SoundSearchFn;
   /** When set, shows a GIF search (Tenor) on the empty sticker area. */
   gifSource?: GifSource;
+  /** Open the "how to use" tour on the first visit (remembered in localStorage). Always in the ⋯ menu. */
+  showTourOnFirstVisit?: boolean;
 }
 
 const REPO_URL = "https://github.com/hweg000/stickerslive";
@@ -120,7 +123,8 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   labelOverrides,
   appVersion = "1.1.2",
   soundSearch,
-  gifSource
+  gifSource,
+  showTourOnFirstVisit = false
 }) => {
   const allowTransparent = platform?.transparentVideo !== false;
   const allowMyInstantsUrl = platform?.myInstantsUrl !== false;
@@ -138,6 +142,11 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   const [gifBrowserOpen, setGifBrowserOpen] = useState(false);
   // "Change sound": shows the sound sources again while the current sound stays loaded until replaced.
   const [changingAudio, setChangingAudio] = useState(false);
+  const [tourOpen, setTourOpen] = useState(() => showTourOnFirstVisit && !hasSeenTour());
+  const closeTour = useCallback(() => {
+    markTourSeen();
+    setTourOpen(false);
+  }, []);
   const [readyArtifact, setReadyArtifact] = useState<ExportArtifact | null>(null);
   const [maxDurationMs, setMaxDurationMs] = useState<5000 | 10000>(10_000);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -829,6 +838,16 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             </label>
             <button
               type="button"
+              data-testid="menu-tour-btn"
+              onClick={() => {
+                setMenuOpen(false);
+                setTourOpen(true);
+              }}
+            >
+              {copy.menuTour}
+            </button>
+            <button
+              type="button"
               onClick={() => {
                 setMenuOpen(false);
                 setAboutOpen(true);
@@ -1162,6 +1181,25 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             play: copy.playPreview,
             stop: copy.stopPreview,
             close: copy.close
+          }}
+        />
+      )}
+
+      {tourOpen && (
+        <Tour
+          onClose={closeTour}
+          steps={[
+            { icon: "🔎", title: copy.tourStep1Title, text: copy.tourStep1Text },
+            { icon: "✋", title: copy.tourStep2Title, text: copy.tourStep2Text },
+            { icon: "🔊", title: copy.tourStep3Title, text: copy.tourStep3Text },
+            { icon: "➜", title: copy.tourStep4Title, text: copy.tourStep4Text }
+          ]}
+          labels={{
+            title: copy.tourTitle,
+            next: copy.tourNext,
+            back: copy.tourBack,
+            skip: copy.tourSkip,
+            done: copy.tourDone
           }}
         />
       )}

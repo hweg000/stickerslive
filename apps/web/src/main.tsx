@@ -330,6 +330,7 @@ void canEncodeAlphaWebm().then((transparentVideo) =>
         labelOverrides={webLabels}
         soundSearch={searchMyInstants}
         gifSource={gifSource}
+        showTourOnFirstVisit
       />
     </React.StrictMode>
   )

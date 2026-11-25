@@ -68,5 +68,19 @@
   "recordStop": "⏹ Stop",
   "recordError": "Could not use the microphone. Check the browser permission.",
   "changeAudioBtn": "🔄 Change sound",
-  "cancelBtn": "Cancel"
+  "cancelBtn": "Cancel",
+  "menuTour": "❓ How to use",
+  "tourTitle": "How to use",
+  "tourNext": "Next",
+  "tourBack": "Back",
+  "tourSkip": "Skip",
+  "tourDone": "Done!",
+  "tourStep1Title": "Pick your sticker",
+  "tourStep1Text": "Tap “Search GIF” to find one on Tenor, or upload your own image, GIF or short video.",
+  "tourStep2Title": "Frame it",
+  "tourStep2Text": "Drag to move it and pinch (or use the mouse wheel) to zoom in or out. What is inside the dashed line is what gets exported. Pick the background: white, black, a colour or transparent.",
+  "tourStep3Title": "Add a sound",
+  "tourStep3Text": "Search a MyInstants sound, record your voice with 🎙️ or upload audio. Then move the window to pick the 5 or 10 second clip. “Change sound” replaces it any time.",
+  "tourStep4Title": "Share it",
+  "tourStep4Text": "Tap the ➜ arrow at the top: it makes the video and lets you share or save it. WhatsApp sends it as a video; if your WhatsApp has sound stickers (beta), use Stickers → Create sticker and pick that video."
 }

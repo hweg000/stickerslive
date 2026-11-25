@@ -591,3 +591,29 @@ describe("change sound", () => {
     expect(screen.queryByTestId("cancel-change-audio-btn")).toBeNull();
   });
 });
+
+describe("how-to tour", () => {
+  it("shows on first visit, walks 4 steps, is remembered, and reopens from the menu", () => {
+    localStorage.removeItem("sticksound.tourSeen");
+    const app = () => (
+      <StikSoundMinimalApp engine={createTestEngine()} shell={{ saveArtifact: vi.fn() }} initialLocale="es" showTourOnFirstVisit />
+    );
+    const { unmount } = render(app());
+    expect(screen.getByTestId("tour").textContent).toContain("1/4");
+    expect(screen.getByTestId("tour-text").textContent).toContain("Buscar GIF");
+    for (let i = 0; i < 3; i++) fireEvent.click(screen.getByTestId("tour-next"));
+    expect(screen.getByTestId("tour").textContent).toContain("4/4");
+    expect(screen.getByTestId("tour-next").textContent).toBe("¡Listo!");
+    fireEvent.click(screen.getByTestId("tour-next"));
+    expect(screen.queryByTestId("tour")).toBeNull();
+    unmount();
+
+    // Second visit: remembered, not shown; still reachable from ⋯ -> "Cómo usar"
+    render(app());
+    expect(screen.queryByTestId("tour")).toBeNull();
+    fireEvent.click(screen.getByTestId("overflow-menu-btn"));
+    fireEvent.click(screen.getByTestId("menu-tour-btn"));
+    expect(screen.getByTestId("tour").textContent).toContain("1/4");
+    localStorage.removeItem("sticksound.tourSeen");
+  });
+});

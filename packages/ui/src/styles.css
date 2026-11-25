@@ -672,6 +672,62 @@ textarea {
   flex: 1 1 auto;
 }
 
+.stik-tour {
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: center;
+}
+
+.stik-tour-kicker {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.stik-tour-icon {
+  font-size: 44px;
+  line-height: 1;
+  margin-top: 4px;
+}
+
+.stik-tour-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.stik-tour-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.stik-tour-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.stik-tour-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.stik-tour-dots span.active {
+  background: var(--accent);
+  width: 18px;
+}
+
+.stik-tour-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Quiet text button (e.g. "Cancel" while choosing a replacement sound) */
 .stik-link-btn {
   align-self: center;
