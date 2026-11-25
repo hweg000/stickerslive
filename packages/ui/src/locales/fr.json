@@ -63,5 +63,8 @@
   "zoomLabel": "Sticker zoom",
   "cropReset": "Reset",
   "aboutMadeBy": "Made by",
-  "aboutBasedOn": "Based on"
+  "aboutBasedOn": "Based on",
+  "recordBtn": "🎙️ Record",
+  "recordStop": "⏹ Stop",
+  "recordError": "Could not use the microphone. Check the browser permission."
 }

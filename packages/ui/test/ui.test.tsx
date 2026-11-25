@@ -5,6 +5,17 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { StikSoundError, type MediaEngine, type SoundProvider } from "@stiksound/core";
 import { StikSoundMinimalApp, TimelineTrimBar } from "../src/index";
 
+// jsdom has no microphone: pretend the APIs exist and hand back a fake take.
+const recordingMock = vi.hoisted(() => ({
+  stop: vi.fn(async () => new Uint8Array([0x52, 0x49, 0x46, 0x46])),
+  cancel: vi.fn()
+}));
+vi.mock("../src/components/recording", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../src/components/recording")>()),
+  canRecordAudio: () => true,
+  startRecording: vi.fn(async () => recordingMock)
+}));
+
 afterEach(() => {
   cleanup();
 });
@@ -482,5 +493,22 @@ describe("StikSoundMinimalApp UI", () => {
       URL.revokeObjectURL = origRevoke;
       if (!hadPointerEvent) delete (window as unknown as { PointerEvent?: unknown }).PointerEvent;
     }
+  });
+});
+
+describe("microphone recording", () => {
+  it("Record -> Stop imports the take as audio (WAV) and shows the recording timer", async () => {
+    render(<StikSoundMinimalApp engine={createTestEngine()} shell={{ saveArtifact: vi.fn() }} initialLocale="es" />);
+    const btn = () => screen.getByTestId("record-audio-btn");
+    expect(btn().textContent).toContain("Grabar");
+
+    fireEvent.click(btn());
+    await waitFor(() => expect(btn().textContent).toContain("Detener"));
+    expect(btn().getAttribute("aria-pressed")).toBe("true");
+
+    fireEvent.click(btn());
+    await waitFor(() => expect(recordingMock.stop).toHaveBeenCalled());
+    // Imported through the normal audio path -> the trim bar switches to the active player
+    await waitFor(() => expect(screen.getByTestId("play-preview-btn")).toBeTruthy());
   });
 });

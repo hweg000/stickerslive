@@ -4,11 +4,11 @@
 
 # StickSound
 
-> **Fork de [SilverFeit/StikSound](https://github.com/SilverFeit/StikSound), modificado por [hweg000](https://github.com/hweg000).** Cambios principales: buscador de sonidos (MyInstants) y de GIFs (Tenor) dentro de la app, WebM transparente real en Chrome/Edge, encuadre con arrastre, pellizco y zoom, y un diseño nuevo. El código original es © 2026 StikSound Contributors (SilverFeit) y se distribuye bajo MIT o Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`); las modificaciones se publican bajo las mismas licencias. Los botones de descarga y la versión web de abajo son del proyecto original.
+> **Fork de [SilverFeit/StikSound](https://github.com/SilverFeit/StikSound), modificado por [hweg000](https://github.com/hweg000).** Cambios principales: buscador de sonidos (MyInstants) y de GIFs (Tenor) dentro de la app, WebM transparente real en Chrome/Edge, encuadre con arrastre, pellizco y zoom, y un diseño nuevo. El código original es © 2026 StikSound Contributors (SilverFeit) y se distribuye bajo MIT o Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`); las modificaciones se publican bajo las mismas licencias. **Usa este fork en [sticksound.netlify.app](https://sticksound.netlify.app)**; el botón de descarga (apps de escritorio) es del proyecto original.
 
 **Crea stickers con sonido de hasta 5 o 10 segundos (con switch en pantalla) a partir de un PNG, JPG, WebP o GIF animado: pega tu sticker, elige un audio local o un enlace de MyInstants, recorta el fragmento exacto y exporta todo localmente.**
 
-[![Usar en la Web](https://img.shields.io/badge/Usar%20en%20la%20Web-GitHub%20Pages-0ea5e9?style=for-the-badge&logo=githubpages&logoColor=white)](https://silverfeit.github.io/StikSound/)
+[![Abrir StickSound](https://img.shields.io/badge/Abrir%20StickSound-sticksound.netlify.app-8b5cf6?style=for-the-badge&logo=netlify&logoColor=white)](https://sticksound.netlify.app)
 [![Descargar](https://img.shields.io/github/v/release/SilverFeit/StikSound?style=for-the-badge&label=Descargar&color=25D366)](https://github.com/SilverFeit/StikSound/releases/latest)
 
 [![Platforms](https://img.shields.io/badge/Platforms-Web%20%7C%20Windows%20%7C%20macOS%20%7C%20Chrome-25D366?style=flat-square)](#usar-en-la-web-vs-instalar)

@@ -22,6 +22,8 @@ export interface TimelineTrimBarProps {
   onTogglePlay: () => void;
   /** Opens the sound browser; the button is hidden when not set. */
   onBrowseSounds?: () => void;
+  /** Microphone recording; the button is hidden when not set (no mic API). */
+  recording?: { active: boolean; elapsedMs: number; onToggle: () => void };
   labels: {
     placeholder: string;
     pickBtn: string;
@@ -29,6 +31,8 @@ export interface TimelineTrimBarProps {
     stop: string;
     maxDurationAria?: string;
     browseBtn?: string;
+    recordBtn?: string;
+    recordStop?: string;
   };
 }
 
@@ -54,6 +58,7 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
   onChangeMaxWindowMs,
   onTogglePlay,
   onBrowseSounds,
+  recording,
   labels
 }) => {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -193,6 +198,20 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
           >
             {labels.pickBtn}
           </button>
+          {recording && (
+            <button
+              type="button"
+              data-testid="record-audio-btn"
+              className={`stik-pill-btn stik-record-btn${recording.active ? " recording" : ""}`}
+              disabled={isBusy && !recording.active}
+              aria-pressed={recording.active}
+              onClick={recording.onToggle}
+            >
+              {recording.active
+                ? `${labels.recordStop ?? "Stop"} ${formatSec(recording.elapsedMs)}`
+                : labels.recordBtn ?? "Record"}
+            </button>
+          )}
           {renderDurationSwitch()}
         </form>
       ) : (

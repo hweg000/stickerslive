@@ -485,6 +485,27 @@ textarea {
   color: var(--text);
 }
 
+/* While recording the button turns red and pulses, so it is obvious the mic is live */
+.stik-audio-empty-form .stik-pill-btn.stik-record-btn.recording {
+  border-color: var(--danger);
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.14);
+  animation: stik-rec-pulse 1.2s ease-in-out infinite;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes stik-rec-pulse {
+  50% {
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.25);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stik-audio-empty-form .stik-pill-btn.stik-record-btn.recording {
+    animation: none;
+  }
+}
+
 .stik-audio-empty-form .stik-url-input {
   background: transparent;
   padding: 7px 10px;

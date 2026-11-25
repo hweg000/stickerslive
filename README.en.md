@@ -4,11 +4,11 @@
 
 # StickSound
 
-> **Fork of [SilverFeit/StikSound](https://github.com/SilverFeit/StikSound), modified by [hweg000](https://github.com/hweg000).** Main changes: in-app sound search (MyInstants) and GIF search (Tenor), real transparent WebM on Chrome/Edge, drag, pinch and zoom framing, and a new design. The original code is © 2026 StikSound Contributors (SilverFeit) and is licensed under MIT or Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`); the modifications are released under the same licenses. The download buttons and web version below belong to the original project.
+> **Fork of [SilverFeit/StikSound](https://github.com/SilverFeit/StikSound), modified by [hweg000](https://github.com/hweg000).** Main changes: in-app sound search (MyInstants) and GIF search (Tenor), real transparent WebM on Chrome/Edge, drag, pinch and zoom framing, and a new design. The original code is © 2026 StikSound Contributors (SilverFeit) and is licensed under MIT or Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`); the modifications are released under the same licenses. **Use this fork at [sticksound.netlify.app](https://sticksound.netlify.app)**; the download button (desktop apps) belongs to the original project.
 
 **Create 5s or 10s sound videos (with an on-screen toggle) from a PNG, JPG, WebP, or animated GIF: paste your sticker, pick a local audio file or a MyInstants link, trim the exact clip, and export everything 100% locally.**
 
-[![Use on the Web](https://img.shields.io/badge/Use%20on%20the%20Web-GitHub%20Pages-0ea5e9?style=for-the-badge&logo=githubpages&logoColor=white)](https://silverfeit.github.io/StikSound/)
+[![Open StickSound](https://img.shields.io/badge/Open%20StickSound-sticksound.netlify.app-8b5cf6?style=for-the-badge&logo=netlify&logoColor=white)](https://sticksound.netlify.app)
 [![Download](https://img.shields.io/github/v/release/SilverFeit/StikSound?style=for-the-badge&label=Download&color=25D366)](https://github.com/SilverFeit/StikSound/releases/latest)
 
 [![Platforms](https://img.shields.io/badge/Platforms-Web%20%7C%20Windows%20%7C%20macOS%20%7C%20Chrome-25D366?style=flat-square)](#web-version-vs-install)

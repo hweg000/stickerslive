@@ -34,6 +34,7 @@ import zhLocale from "../locales/zh.json";
 import { TimelineTrimBar } from "./TimelineTrimBar";
 import { SoundBrowser, type SoundSearchFn } from "./SoundBrowser";
 import { GifBrowser, type GifSearchResult, type GifSource } from "./GifBrowser";
+import { MAX_RECORDING_MS, canRecordAudio, startRecording, type ActiveRecording } from "./recording";
 
 export type ShareOutcome = "shared" | "cancelled" | "needs-tap";
 
@@ -320,6 +321,54 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
     },
     [controller, project, effectiveMaxAudioMs, handleError, stopPlayback]
   );
+
+  // Microphone recording: the take is converted to WAV and goes through the normal audio import.
+  const recordAvailable = useMemo(() => canRecordAudio(), []);
+  const recordingRef = useRef<ActiveRecording | null>(null);
+  const [recordingSince, setRecordingSince] = useState<number | null>(null);
+  const [recordingNow, setRecordingNow] = useState(0);
+  const stopRecording = async () => {
+    const rec = recordingRef.current;
+    if (!rec) return;
+    recordingRef.current = null;
+    setRecordingSince(null);
+    let bytes: Uint8Array;
+    setIsBusy(true);
+    try {
+      bytes = await rec.stop();
+    } catch {
+      setIsBusy(false);
+      setErrorMessage(copy.recordError);
+      return;
+    }
+    setIsBusy(false);
+    await importAudioBytes(bytes, "grabacion.wav");
+  };
+  const toggleRecording = async () => {
+    if (recordingRef.current) return stopRecording();
+    setErrorMessage(null);
+    setStatusMessage(null);
+    try {
+      recordingRef.current = await startRecording();
+      const now = Date.now();
+      setRecordingSince(now);
+      setRecordingNow(now);
+    } catch {
+      setErrorMessage(copy.recordError); // permission denied or no microphone
+    }
+  };
+  const stopRecordingRef = useRef(stopRecording);
+  stopRecordingRef.current = stopRecording;
+  useEffect(() => {
+    if (recordingSince === null) return;
+    const id = window.setInterval(() => {
+      const now = Date.now();
+      setRecordingNow(now);
+      if (now - recordingSince >= MAX_RECORDING_MS) void stopRecordingRef.current();
+    }, 200);
+    return () => window.clearInterval(id);
+  }, [recordingSince]);
+  useEffect(() => () => recordingRef.current?.cancel(), []);
 
   const handleGlobalPaste = useCallback(
     async (e: ClipboardEvent) => {
@@ -1058,6 +1107,15 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         onUrlInputChange={setUrlInput}
         onSubmitUrl={importMyInstantsUrl}
         onBrowseSounds={soundSearch ? () => setBrowserOpen(true) : undefined}
+        recording={
+          recordAvailable
+            ? {
+                active: recordingSince !== null,
+                elapsedMs: recordingSince !== null ? recordingNow - recordingSince : 0,
+                onToggle: () => void toggleRecording()
+              }
+            : undefined
+        }
         onSelectAudioFile={async (f) => importAudioBytes(new Uint8Array(await f.arrayBuffer()), f.name)}
         onChangeRange={handleRangeChange}
         onChangeMaxWindowMs={handleMaxDurationChange}
@@ -1068,7 +1126,9 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
           play: copy.playPreview,
           stop: copy.stopPreview,
           maxDurationAria: copy.maxDurationAria,
-          browseBtn: copy.browseSoundsBtn
+          browseBtn: copy.browseSoundsBtn,
+          recordBtn: copy.recordBtn,
+          recordStop: copy.recordStop
         }}
       />
 

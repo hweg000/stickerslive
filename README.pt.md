@@ -4,11 +4,11 @@
 
 # StickSound
 
-> **Fork de [SilverFeit/StikSound](https://github.com/SilverFeit/StikSound), modificado por [hweg000](https://github.com/hweg000).** Principais mudanças: busca de sons (MyInstants) e de GIFs (Tenor) dentro do app, WebM transparente real no Chrome/Edge, enquadramento com arrastar, pinça e zoom, e um design novo. O código original é © 2026 StikSound Contributors (SilverFeit) e é licenciado sob MIT ou Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`); as modificações são publicadas sob as mesmas licenças. Os botões de download e a versão web abaixo são do projeto original.
+> **Fork de [SilverFeit/StikSound](https://github.com/SilverFeit/StikSound), modificado por [hweg000](https://github.com/hweg000).** Principais mudanças: busca de sons (MyInstants) e de GIFs (Tenor) dentro do app, WebM transparente real no Chrome/Edge, enquadramento com arrastar, pinça e zoom, e um design novo. O código original é © 2026 StikSound Contributors (SilverFeit) e é licenciado sob MIT ou Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`); as modificações são publicadas sob as mesmas licenças. **Use este fork em [sticksound.netlify.app](https://sticksound.netlify.app)**; o botão de download (apps de desktop) é do projeto original.
 
 **Crie vídeos curtos com som de até 5 ou 10 segundos (com seletor na tela) a partir de PNG, JPG, WebP ou GIF animado: cole seu sticker, escolha um áudio local ou um link do MyInstants, recorte o trecho exato e exporte tudo 100% localmente.**
 
-[![Usar na Web](https://img.shields.io/badge/Usar%20na%20Web-GitHub%20Pages-0ea5e9?style=for-the-badge&logo=githubpages&logoColor=white)](https://silverfeit.github.io/StikSound/)
+[![Abrir StickSound](https://img.shields.io/badge/Abrir%20StickSound-sticksound.netlify.app-8b5cf6?style=for-the-badge&logo=netlify&logoColor=white)](https://sticksound.netlify.app)
 [![Baixar](https://img.shields.io/github/v/release/SilverFeit/StikSound?style=for-the-badge&label=Baixar&color=25D366)](https://github.com/SilverFeit/StikSound/releases/latest)
 
 [![Platforms](https://img.shields.io/badge/Platforms-Web%20%7C%20Windows%20%7C%20macOS%20%7C%20Chrome-25D366?style=flat-square)](#versão-web-vs-instalar)

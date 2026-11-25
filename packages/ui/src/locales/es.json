@@ -63,5 +63,8 @@
   "zoomLabel": "Zoom del sticker",
   "cropReset": "Centrar",
   "aboutMadeBy": "Hecho por",
-  "aboutBasedOn": "Basado en"
+  "aboutBasedOn": "Basado en",
+  "recordBtn": "🎙️ Grabar",
+  "recordStop": "⏹ Detener",
+  "recordError": "No se pudo usar el micrófono. Revisa que el navegador tenga permiso."
 }
