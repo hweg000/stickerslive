@@ -2,7 +2,9 @@
 
 <img src="docs/assets/app-icon.svg" alt="StikSound App Icon" width="120" height="120" />
 
-# StikSound
+# StickSound
+
+> **Fork of [SilverFeit/StikSound](https://github.com/SilverFeit/StikSound), modified by [hweg000](https://github.com/hweg000).** Main changes: in-app sound search (MyInstants) and GIF search (Tenor), real transparent WebM on Chrome/Edge, drag, pinch and zoom framing, and a new design. The original code is © 2026 StikSound Contributors (SilverFeit) and is licensed under MIT or Apache-2.0 (`LICENSE-MIT`, `LICENSE-APACHE`); the modifications are released under the same licenses. The download buttons and web version below belong to the original project.
 
 **Create 5s or 10s sound videos (with an on-screen toggle) from a PNG, JPG, WebP, or animated GIF: paste your sticker, pick a local audio file or a MyInstants link, trim the exact clip, and export everything 100% locally.**
 
