@@ -608,21 +608,23 @@ describe("how-to tour", () => {
     expect(screen.queryByTestId("tour")).toBeNull();
     unmount();
 
-    // Second visit: remembered, not shown; still reachable from ⋯ -> "Cómo usar"
+    // Second visit: remembered, not shown; reachable from the header "?" button
     render(app());
     expect(screen.queryByTestId("tour")).toBeNull();
-    fireEvent.click(screen.getByTestId("overflow-menu-btn"));
-    fireEvent.click(screen.getByTestId("menu-tour-btn"));
+    expect(screen.getByTestId("help-tour-btn").getAttribute("aria-label")).toBe("Cómo usar");
+    fireEvent.click(screen.getByTestId("help-tour-btn"));
     expect(screen.getByTestId("tour").textContent).toContain("1/4");
     localStorage.removeItem("sticksound.tourSeen");
   });
 });
 
 describe("WhatsApp sticker guide", () => {
-  it("opens from the menu, walks 6 steps and links the Android beta opt-in", () => {
+  it("opens from the header button, walks 6 steps and links the Android beta opt-in", () => {
     render(<StikSoundMinimalApp engine={createTestEngine()} shell={{ saveArtifact: vi.fn() }} initialLocale="es" />);
+    // Help is no longer hidden in the ⋯ menu
     fireEvent.click(screen.getByTestId("overflow-menu-btn"));
-    fireEvent.click(screen.getByTestId("menu-whatsapp-btn"));
+    expect(screen.getByTestId("overflow-menu").textContent).not.toMatch(/Cómo usar|WhatsApp/);
+    fireEvent.click(screen.getByTestId("help-whatsapp-btn"));
     expect(screen.getByTestId("tour").textContent).toContain("Sticker en WhatsApp · 1/6");
 
     fireEvent.click(screen.getByTestId("tour-next"));

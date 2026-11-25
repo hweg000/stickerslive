@@ -37,6 +37,22 @@ export const IconDownload = ({ size }: { size?: number }) => (
   </Svg>
 );
 
+export const IconHelp = () => (
+  <Svg>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M9.6 9.3a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.2-2.4 3.7" />
+    <circle cx="12" cy="17.2" r="0.6" fill="currentColor" />
+  </Svg>
+);
+
+/** Chat bubble with a sound wave: "make it a chat sticker" (generic, not a brand logo). */
+export const IconChatSound = () => (
+  <Svg>
+    <path d="M4 12a8 8 0 1 1 3.2 6.4L4 19.5l1.1-3.1A7.9 7.9 0 0 1 4 12z" />
+    <path d="M9 10.5v3M12 9v6M15 10.5v3" />
+  </Svg>
+);
+
 export const IconArrow = () => (
   <Svg>
     <path d="M5 12h14M13 6l6 6-6 6" />

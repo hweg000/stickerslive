@@ -1,6 +1,6 @@
 /// <reference path="../assets.d.ts" />
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { IconArrow, IconClose, IconDownload, IconMore, IconSpinner } from "./icons";
+import { IconArrow, IconChatSound, IconClose, IconDownload, IconHelp, IconMore, IconSpinner } from "./icons";
 import {
   EXPORT_PROFILES,
   LIMITS,
@@ -743,16 +743,45 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
       dir={locale === "ar" ? "rtl" : "ltr"}
     >
       <header className="stik-top-corners">
-        <button
-          type="button"
-          data-testid="reset-all-btn"
-          className="stik-corner-btn stik-reset-btn"
-          title={copy.resetTooltip}
-          aria-label={copy.resetTooltip}
-          onClick={handleResetAll}
-        >
-          <IconClose />
-        </button>
+        <div className="stik-right-actions">
+          <button
+            type="button"
+            data-testid="reset-all-btn"
+            className="stik-corner-btn stik-reset-btn"
+            title={copy.resetTooltip}
+            aria-label={copy.resetTooltip}
+            onClick={handleResetAll}
+          >
+            <IconClose />
+          </button>
+          {/* Help lives in the header (not the ⋯ menu) so first-time users actually find it */}
+          <button
+            type="button"
+            data-testid="help-tour-btn"
+            className="stik-corner-btn stik-help-btn"
+            title={copy.tourTitle}
+            aria-label={copy.tourTitle}
+            onClick={() => {
+              setMenuOpen(false);
+              setTourOpen(true);
+            }}
+          >
+            <IconHelp />
+          </button>
+          <button
+            type="button"
+            data-testid="help-whatsapp-btn"
+            className="stik-corner-btn stik-help-btn"
+            title={copy.waGuideTitle}
+            aria-label={copy.waGuideTitle}
+            onClick={() => {
+              setMenuOpen(false);
+              setWaGuideOpen(true);
+            }}
+          >
+            <IconChatSound />
+          </button>
+        </div>
 
         <div className="stik-right-actions">
           <button
@@ -841,26 +870,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
                 ))}
               </select>
             </label>
-            <button
-              type="button"
-              data-testid="menu-tour-btn"
-              onClick={() => {
-                setMenuOpen(false);
-                setTourOpen(true);
-              }}
-            >
-              {copy.menuTour}
-            </button>
-            <button
-              type="button"
-              data-testid="menu-whatsapp-btn"
-              onClick={() => {
-                setMenuOpen(false);
-                setWaGuideOpen(true);
-              }}
-            >
-              {copy.menuWhatsapp}
-            </button>
             <button
               type="button"
               onClick={() => {

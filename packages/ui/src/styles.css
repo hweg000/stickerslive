@@ -120,6 +120,11 @@ textarea {
   transform: translateY(-1px);
 }
 
+/* Help buttons stand out a little from the other corner buttons */
+.stik-help-btn {
+  color: var(--accent);
+}
+
 .stik-reset-btn:hover {
   border-color: var(--danger) !important;
   color: var(--danger);
