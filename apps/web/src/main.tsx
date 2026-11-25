@@ -112,7 +112,7 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
     downloadFmtMp4: "Video MP4 (5s / 10s)",
     exportSuccessVideo: "Listo. Si no elegiste dónde guardarlo, búscalo en Archivos → Descargas.",
     aboutRights:
-      "Versión web. Todo se procesa en tu teléfono; nada se sube a internet. Para usar un sonido de MyInstants, descárgalo primero desde Safari y luego elígelo con el botón de audio. El video dura como máximo 5 o 10 segundos, según el botón de la barra (por defecto, 10).",
+      "Versión web. Tus imágenes, GIFs, audios y grabaciones se procesan en tu dispositivo y no se suben a ningún servidor. Los buscadores consultan MyInstants (sonidos) y Tenor (GIFs). Usamos Microsoft Clarity para ver de forma anónima cómo se usa la app y mejorarla. El video dura como máximo 5 o 10 segundos, según el botón de la barra (por defecto, 10).",
     ...(isTouch
       ? {
         stickerDropTitle: "Toca para elegir tu sticker",
@@ -132,7 +132,7 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
     downloadFmtMp4: "MP4 video (5s / 10s)",
     exportSuccessVideo: "Done. If you didn't pick a place, look in Files → Downloads.",
     aboutRights:
-      "Web version. Everything runs on your phone; nothing is uploaded. To use a MyInstants sound, download it in Safari first, then pick it with the sound button. The video is at most 5 or 10 seconds, chosen with the bar button (10 by default).",
+      "Web version. Your images, GIFs, audio and recordings are processed on your device and never uploaded to any server. The search boxes query MyInstants (sounds) and Tenor (GIFs). We use Microsoft Clarity to see anonymously how the app is used and improve it. The video is at most 5 or 10 seconds, chosen with the bar button (10 by default).",
     ...(isTouch
       ? {
         stickerDropTitle: "Tap to choose your sticker",
