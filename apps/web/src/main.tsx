@@ -107,7 +107,7 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
   es: {
     exportTooltip: "Crear el video y compartirlo",
     exportDisabledMissingAudio: "Agrega un audio (MP3, M4A, WAV)",
-    audioPickBtn: "🎵 Elegir audio (MP3, M4A, WAV)",
+    audioPickBtn: "🎵 Subir audio",
     copyAgainBtn: "Compartir",
     downloadTooltip: "Guardar",
     downloadBtnLabel: "Guardar",
@@ -127,7 +127,7 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
   en: {
     exportTooltip: "Make the video and share it",
     exportDisabledMissingAudio: "Add a sound (MP3, M4A, WAV)",
-    audioPickBtn: "🎵 Choose sound (MP3, M4A, WAV)",
+    audioPickBtn: "🎵 Upload sound",
     copyAgainBtn: "Share",
     downloadTooltip: "Save",
     downloadBtnLabel: "Save",

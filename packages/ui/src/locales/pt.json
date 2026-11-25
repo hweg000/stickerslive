@@ -49,7 +49,7 @@
   "close": "Fechar",
   "shareReadyToast": "Vídeo pronto. Toque em \"Compartilhar\" para enviar ao WhatsApp ou salvar em Fotos.",
   "videoSilentToast": "Este vídeo não tem som (ou não pôde ser lido). Se quiser, escolha um áudio pelo botão de áudio.",
-  "browseSoundsBtn": "🔎 MyInstants",
+  "browseSoundsBtn": "🔎 Search sounds",
   "browseTitle": "MyInstants sounds",
   "browseSearchPlaceholder": "Search sounds… (empty = trending)",
   "browseUse": "Use",
@@ -60,5 +60,6 @@
   "gifBrowserTitle": "Tenor GIFs",
   "gifSearchPlaceholder": "Search GIFs… (empty = memes)",
   "gifEmpty": "No GIFs found.",
-  "gifError": "Could not load Tenor. Check your connection."
+  "gifError": "Could not load Tenor. Check your connection.",
+  "uploadStickerBtn": "📁 Upload file"
 }

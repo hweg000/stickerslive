@@ -350,10 +350,10 @@ textarea {
   flex: 1 1 auto;
 }
 
-.stik-browse-btn {
+.stik-pill-btn.stik-browse-btn {
   flex-basis: 100%;
-  padding: 10px 14px;
-  font-size: 13px;
+  padding: 12px 14px;
+  font-size: 15px;
 }
 
 .stik-sound-browser {
@@ -413,8 +413,41 @@ textarea {
   font-size: 13px;
 }
 
-.stik-gif-btn {
-  margin-top: 12px;
+.stik-empty-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.stik-pill-btn.stik-primary-cta {
+  padding: 14px 28px;
+  font-size: 16px;
+  min-width: 210px;
+}
+
+/* Secondary actions: outlined, quieter than the accent CTA */
+.stik-pill-btn.stik-secondary-btn,
+.stik-audio-empty-form .stik-pill-btn:not(.stik-browse-btn) {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 12px;
+  padding: 7px 14px;
+  min-height: 38px;
+}
+
+.stik-pill-btn.stik-secondary-btn:not(:disabled):hover,
+.stik-audio-empty-form .stik-pill-btn:not(.stik-browse-btn):not(:disabled):hover {
+  background: transparent;
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.stik-audio-empty-form .stik-url-input {
+  background: transparent;
+  padding: 7px 10px;
 }
 
 .stik-gif-grid {

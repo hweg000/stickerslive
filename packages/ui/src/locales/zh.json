@@ -49,7 +49,7 @@
   "close": "关闭",
   "shareReadyToast": "视频已就绪。点击“分享”发送到 WhatsApp 或保存到相册。",
   "videoSilentToast": "此视频没有声音（或无法读取音轨）。你可以使用音频按钮选择一个声音。",
-  "browseSoundsBtn": "🔎 MyInstants",
+  "browseSoundsBtn": "🔎 Search sounds",
   "browseTitle": "MyInstants sounds",
   "browseSearchPlaceholder": "Search sounds… (empty = trending)",
   "browseUse": "Use",
@@ -60,5 +60,6 @@
   "gifBrowserTitle": "Tenor GIFs",
   "gifSearchPlaceholder": "Search GIFs… (empty = memes)",
   "gifEmpty": "No GIFs found.",
-  "gifError": "Could not load Tenor. Check your connection."
+  "gifError": "Could not load Tenor. Check your connection.",
+  "uploadStickerBtn": "📁 Upload file"
 }

@@ -859,25 +859,40 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             else if (audio) togglePlay();
           }}
         >
-          {!sticker ? (
+          {!sticker && gifSource ? (
+            // GIF search is the main path; uploading (or drag/paste onto the stage) is secondary.
+            <div className="stik-empty-sticker stik-empty-choice">
+              <button
+                type="button"
+                data-testid="browse-gifs-btn"
+                className="stik-pill-btn stik-pill-accent stik-primary-cta"
+                disabled={isBusy}
+                onClick={(e) => {
+                  e.stopPropagation(); // the stage itself opens the file picker
+                  setGifBrowserOpen(true);
+                }}
+              >
+                {copy.browseGifsBtn}
+              </button>
+              <button
+                type="button"
+                data-testid="upload-sticker-btn"
+                className="stik-pill-btn stik-secondary-btn"
+                disabled={isBusy}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  stickerFileInputRef.current?.click();
+                }}
+              >
+                {copy.uploadStickerBtn}
+              </button>
+              <p className="stik-empty-hint">{copy.stickerDropHint}</p>
+            </div>
+          ) : !sticker ? (
             <div className="stik-empty-sticker">
               <div className="stik-plus-icon">+</div>
               <p className="stik-empty-title">{copy.stickerDropTitle}</p>
               <p className="stik-empty-hint">{copy.stickerDropHint}</p>
-              {gifSource && (
-                <button
-                  type="button"
-                  data-testid="browse-gifs-btn"
-                  className="stik-pill-btn stik-pill-accent stik-gif-btn"
-                  disabled={isBusy}
-                  onClick={(e) => {
-                    e.stopPropagation(); // the stage itself opens the file picker
-                    setGifBrowserOpen(true);
-                  }}
-                >
-                  {copy.browseGifsBtn}
-                </button>
-              )}
             </div>
           ) : (
             <div className="stik-preview-box">

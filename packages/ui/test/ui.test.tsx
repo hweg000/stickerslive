@@ -392,8 +392,11 @@ describe("StikSoundMinimalApp UI", () => {
       .querySelector('input[accept*="image/png"]') as HTMLInputElement;
     const pickerClick = vi.spyOn(fileInput, "click");
 
+    // Secondary "upload" opens the file picker; the primary GIF search must not.
+    fireEvent.click(screen.getByTestId("upload-sticker-btn"));
+    expect(pickerClick).toHaveBeenCalledTimes(1);
     fireEvent.click(screen.getByTestId("browse-gifs-btn"));
-    expect(pickerClick).not.toHaveBeenCalled();
+    expect(pickerClick).toHaveBeenCalledTimes(1);
     await waitFor(() => expect(screen.getByTestId("gif-item")).toBeTruthy());
     expect(gifSource.search).toHaveBeenCalledWith("");
 

@@ -49,7 +49,7 @@
   "close": "Закрыть",
   "shareReadyToast": "Видео готово. Нажмите «Поделиться», чтобы отправить в WhatsApp или сохранить в Фото.",
   "videoSilentToast": "В этом видео нет звука (или его не удалось прочитать). Выберите звук кнопкой аудио.",
-  "browseSoundsBtn": "🔎 MyInstants",
+  "browseSoundsBtn": "🔎 Search sounds",
   "browseTitle": "MyInstants sounds",
   "browseSearchPlaceholder": "Search sounds… (empty = trending)",
   "browseUse": "Use",
@@ -60,5 +60,6 @@
   "gifBrowserTitle": "Tenor GIFs",
   "gifSearchPlaceholder": "Search GIFs… (empty = memes)",
   "gifEmpty": "No GIFs found.",
-  "gifError": "Could not load Tenor. Check your connection."
+  "gifError": "Could not load Tenor. Check your connection.",
+  "uploadStickerBtn": "📁 Upload file"
 }
