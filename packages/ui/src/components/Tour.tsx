@@ -7,6 +7,8 @@ export interface TourStep {
   text: string;
   /** Optional external link shown under the text (opens in a new tab). */
   link?: { href: string; label: string };
+  /** Optional screenshot shown under the text. */
+  image?: { src: string; alt: string };
 }
 
 export interface TourProps {
@@ -78,6 +80,7 @@ export const Tour = ({ steps, onClose, labels }: TourProps) => {
         <p className="stik-tour-text" data-testid="tour-text">
           {step.text}
         </p>
+        {step.image && <img className="stik-tour-image" data-testid="tour-image" src={step.image.src} alt={step.image.alt} />}
         {step.link && (
           <a className="stik-tour-link" data-testid="tour-link" href={step.link.href} target="_blank" rel="noopener noreferrer">
             {step.link.label} ↗

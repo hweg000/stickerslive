@@ -1,3 +1,4 @@
+/// <reference path="../assets.d.ts" />
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IconArrow, IconClose, IconDownload, IconMore, IconSpinner } from "./icons";
 import {
@@ -36,6 +37,8 @@ import { SoundBrowser, type SoundSearchFn } from "./SoundBrowser";
 import { GifBrowser, type GifSearchResult, type GifSource } from "./GifBrowser";
 import { MAX_RECORDING_MS, canRecordAudio, startRecording, type ActiveRecording } from "./recording";
 import { Tour, hasSeenTour, markTourSeen } from "./Tour";
+import waSoundButtonImg from "../assets/wa-editor-sound-button.png";
+import waBecomeTesterImg from "../assets/wa-become-tester.png";
 
 export type ShareOutcome = "shared" | "cancelled" | "needs-tap";
 
@@ -1228,18 +1231,29 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         <Tour
           onClose={closeWaGuide}
           steps={[
-            { icon: "📱", title: copy.waStep1Title, text: copy.waStep1Text },
+            {
+              icon: "📱",
+              title: copy.waStep1Title,
+              text: copy.waStep1Text,
+              image: { src: waSoundButtonImg, alt: copy.waImgSoundAlt }
+            },
             {
               icon: "🧪",
               title: copy.waStep2Title,
               text: copy.waStep2Text,
+              image: { src: waBecomeTesterImg, alt: copy.waImgTesterAlt },
               // Google Play's standard opt-in page for an app's beta program.
               link: { href: "https://play.google.com/apps/testing/com.whatsapp", label: copy.waBetaLink }
             },
             { icon: "⬆️", title: copy.waStep3Title, text: copy.waStep3Text },
             { icon: "🍎", title: copy.waStep4Title, text: copy.waStep4Text },
             { icon: "🎬", title: copy.waStep5Title, text: copy.waStep5Text },
-            { icon: "✨", title: copy.waStep6Title, text: copy.waStep6Text }
+            {
+              icon: "✨",
+              title: copy.waStep6Title,
+              text: copy.waStep6Text,
+              image: { src: waSoundButtonImg, alt: copy.waImgSoundAlt }
+            }
           ]}
           labels={{
             title: copy.waGuideTitle,

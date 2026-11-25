@@ -629,6 +629,7 @@ describe("WhatsApp sticker guide", () => {
     expect(screen.getByTestId("tour-text").textContent).toContain("Únete a la beta");
     expect(screen.getByTestId("tour-link").getAttribute("href")).toBe("https://play.google.com/apps/testing/com.whatsapp");
     expect(screen.getByTestId("tour-link").getAttribute("rel")).toContain("noopener");
+    expect(screen.getByTestId("tour-image").getAttribute("alt")).toContain("Become a tester");
 
     for (let i = 0; i < 4; i++) fireEvent.click(screen.getByTestId("tour-next"));
     expect(screen.getByTestId("tour").textContent).toContain("6/6");

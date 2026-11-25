@@ -703,6 +703,17 @@ textarea {
   color: var(--text);
 }
 
+.stik-tour-image {
+  display: block;
+  max-width: 100%;
+  max-height: 150px;
+  margin: 0 auto;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  object-fit: contain;
+  background: #fff;
+}
+
 .stik-tour-link {
   align-self: center;
   color: var(--accent);
