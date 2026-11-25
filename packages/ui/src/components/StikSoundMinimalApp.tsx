@@ -136,6 +136,8 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   const [aboutOpen, setAboutOpen] = useState(false);
   const [browserOpen, setBrowserOpen] = useState(false);
   const [gifBrowserOpen, setGifBrowserOpen] = useState(false);
+  // "Change sound": shows the sound sources again while the current sound stays loaded until replaced.
+  const [changingAudio, setChangingAudio] = useState(false);
   const [readyArtifact, setReadyArtifact] = useState<ExportArtifact | null>(null);
   const [maxDurationMs, setMaxDurationMs] = useState<5000 | 10000>(10_000);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -274,6 +276,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
           effectiveMaxAudioMs
         );
         setProject(next);
+        setChangingAudio(false);
       } catch (err) {
         handleError(err);
       } finally {
@@ -313,6 +316,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         const next = await controller.importAudioUrl(project, rawUrl, effectiveMaxAudioMs);
         setProject(next);
         setUrlInput("");
+        setChangingAudio(false);
       } catch (err) {
         handleError(err);
       } finally {
@@ -465,6 +469,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
 
   const handleResetAll = () => {
     stopPlayback();
+    setChangingAudio(false);
     setProject((prev) => resetProject(prev));
     setReadyArtifact(null);
     setDownloadMenuOpen(false);
@@ -1079,7 +1084,12 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
       )}
 
       <TimelineTrimBar
-        hasAudio={Boolean(audio)}
+        hasAudio={Boolean(audio) && !changingAudio}
+        onChangeAudio={() => {
+          stopPlayback();
+          setChangingAudio(true);
+        }}
+        onCancelChange={changingAudio ? () => setChangingAudio(false) : undefined}
         durationMs={audio?.duration_ms ?? 0}
         startMs={assoc?.start_ms ?? 0}
         endMs={assoc?.end_ms ?? 0}
@@ -1113,7 +1123,9 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
           maxDurationAria: copy.maxDurationAria,
           browseBtn: copy.browseSoundsBtn,
           recordBtn: copy.recordBtn,
-          recordStop: copy.recordStop
+          recordStop: copy.recordStop,
+          changeAudioBtn: copy.changeAudioBtn,
+          cancelBtn: copy.cancelBtn
         }}
       />
 

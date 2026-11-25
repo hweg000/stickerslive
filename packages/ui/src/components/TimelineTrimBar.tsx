@@ -24,6 +24,10 @@ export interface TimelineTrimBarProps {
   onBrowseSounds?: () => void;
   /** Microphone recording; the button is hidden when not set (no mic API). */
   recording?: { active: boolean; elapsedMs: number; onToggle: () => void };
+  /** With audio loaded: go back to the sound sources; a new sound replaces the current one. */
+  onChangeAudio?: () => void;
+  /** While choosing a replacement: return to the current sound. */
+  onCancelChange?: () => void;
   labels: {
     placeholder: string;
     pickBtn: string;
@@ -33,6 +37,8 @@ export interface TimelineTrimBarProps {
     browseBtn?: string;
     recordBtn?: string;
     recordStop?: string;
+    changeAudioBtn?: string;
+    cancelBtn?: string;
   };
 }
 
@@ -59,6 +65,8 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
   onTogglePlay,
   onBrowseSounds,
   recording,
+  onChangeAudio,
+  onCancelChange,
   labels
 }) => {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -220,6 +228,16 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
             {!onBrowseSounds && recordButton}
             {renderDurationSwitch()}
           </div>
+          {onCancelChange && (
+            <button
+              type="button"
+              data-testid="cancel-change-audio-btn"
+              className="stik-link-btn"
+              onClick={onCancelChange}
+            >
+              {labels.cancelBtn ?? "Cancel"}
+            </button>
+          )}
         </form>
       ) : (
         <div className="stik-timeline-active">
@@ -279,6 +297,17 @@ export const TimelineTrimBar: React.FC<TimelineTrimBarProps> = ({
             {formatSec(selectedMs)} / {formatSec(maxWindowMs)}
           </span>
           {renderDurationSwitch()}
+          {onChangeAudio && (
+            <button
+              type="button"
+              data-testid="change-audio-btn"
+              className="stik-pill-btn stik-secondary-btn stik-change-audio-btn"
+              disabled={isBusy}
+              onClick={onChangeAudio}
+            >
+              {labels.changeAudioBtn ?? "Change sound"}
+            </button>
+          )}
         </div>
       )}
     </div>

@@ -667,6 +667,28 @@ textarea {
   accent-color: var(--accent);
 }
 
+/* Active player: "Change sound" takes the rest of the row next to the 5s/10s switch */
+.stik-pill-btn.stik-change-audio-btn {
+  flex: 1 1 auto;
+}
+
+/* Quiet text button (e.g. "Cancel" while choosing a replacement sound) */
+.stik-link-btn {
+  align-self: center;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 6px 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.stik-link-btn:hover {
+  color: var(--text);
+}
+
 .stik-duration-pill {
   font-size: 11px;
   color: var(--muted);

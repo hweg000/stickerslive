@@ -66,5 +66,7 @@
   "aboutBasedOn": "Basado en",
   "recordBtn": "🎙️ Grabar",
   "recordStop": "⏹ Detener",
-  "recordError": "No se pudo usar el micrófono. Revisa que el navegador tenga permiso."
+  "recordError": "No se pudo usar el micrófono. Revisa que el navegador tenga permiso.",
+  "changeAudioBtn": "🔄 Cambiar sonido",
+  "cancelBtn": "Cancelar"
 }

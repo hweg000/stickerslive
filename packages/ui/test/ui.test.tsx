@@ -550,3 +550,44 @@ describe("sound browser links", () => {
     await waitFor(() => expect(screen.queryByTestId("sound-browser")).toBeNull());
   });
 });
+
+describe("change sound", () => {
+  it("'Cambiar sonido' reopens the sources, Cancel returns, and a new sound replaces the old one", async () => {
+    const urls: string[] = [];
+    const resolve = vi.fn(async (url: string) => {
+      urls.push(url);
+      return { page_url: null, media_url: url, title: null, bytes: new Uint8Array([1, 2, 3, 4]) };
+    });
+    const soundSearch = vi.fn(async () => [{ title: "Bruh", media_url: "https://www.myinstants.com/media/sounds/bruh.mp3" }]);
+    render(
+      <StikSoundMinimalApp
+        engine={createTestEngine()}
+        providers={[{ id: "myinstants", canResolve: () => true, resolve }]}
+        shell={{ saveArtifact: vi.fn() }}
+        initialLocale="es"
+        soundSearch={soundSearch}
+      />
+    );
+    const pick = async () => {
+      fireEvent.click(screen.getByTestId("browse-sounds-btn"));
+      await waitFor(() => expect(screen.getByTestId("sound-use-btn")).toBeTruthy());
+      fireEvent.click(screen.getByTestId("sound-use-btn"));
+      await waitFor(() => expect(screen.getByTestId("play-preview-btn")).toBeTruthy());
+    };
+    await pick();
+
+    // Change -> sources come back (with Cancel); Cancel -> the player returns, sound untouched
+    fireEvent.click(screen.getByTestId("change-audio-btn"));
+    expect(screen.queryByTestId("play-preview-btn")).toBeNull();
+    expect(screen.getByTestId("browse-sounds-btn")).toBeTruthy();
+    fireEvent.click(screen.getByTestId("cancel-change-audio-btn"));
+    expect(screen.getByTestId("play-preview-btn")).toBeTruthy();
+    expect(resolve).toHaveBeenCalledTimes(1);
+
+    // Change -> pick another -> back to the player, no Cancel left behind
+    fireEvent.click(screen.getByTestId("change-audio-btn"));
+    await pick();
+    expect(resolve).toHaveBeenCalledTimes(2);
+    expect(screen.queryByTestId("cancel-change-audio-btn")).toBeNull();
+  });
+});
