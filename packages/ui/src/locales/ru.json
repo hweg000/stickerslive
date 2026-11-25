@@ -1,5 +1,5 @@
 {
-  "appTitle": "StikSound",
+  "appTitle": "StickSound",
   "resetTooltip": "Очистить аудио и стикер и начать заново",
   "exportTooltip": "Предпросмотр и копирование. Вставка в чат отправит видео (Ctrl+V)",
   "downloadTooltip": "Скачать видео (5 с или 10 с)",
@@ -34,12 +34,10 @@
   "formatBundle": "Sound Bundle (.stiksound.zip)",
   "formatWebp": "Статичный WebP (512×512)",
   "menuMatte": "Фон для MP4",
-  "menuOpenProject": "Открыть .stiksound.zip",
-  "menuSaveProject": "Сохранить .stiksound.zip",
   "menuLanguage": "Язык",
   "menuAbout": "О программе и лицензии",
   "aboutSubtitle": "Локальный редактор стикеров со звуком (5 с или 10 с). 100% локальная обработка · Без аккаунтов и серверов.",
-  "aboutRights": "Звуки с MyInstants принадлежат их владельцам. StikSound работает полностью локально без внешних зависимостей. Длительность видео не превышает 5 или 10 секунд (по умолчанию 10).",
+  "aboutRights": "Звуки с MyInstants принадлежат их владельцам. StickSound работает полностью локально без внешних зависимостей. Длительность видео не превышает 5 или 10 секунд (по умолчанию 10).",
   "aboutLicenseLine": "Распространяется под двойной лицензией MIT / Apache-2.0.",
   "aboutThirdPartyTitle": "Лицензии открытого ПО и уведомления",
   "aboutThirdPartySummary": "Основные компоненты: Tauri, React, fflate, mp4-muxer, webm-muxer (MIT), Rust image/gif/webp/reqwest/serde (MIT / Apache-2.0), zip (MIT) и symphonia (MPL-2.0). Полный список см. в THIRD_PARTY.md.",
@@ -63,5 +61,7 @@
   "gifError": "Could not load Tenor. Check your connection.",
   "uploadStickerBtn": "📁 Upload file",
   "zoomLabel": "Sticker zoom",
-  "cropReset": "Reset"
+  "cropReset": "Reset",
+  "aboutMadeBy": "Made by",
+  "aboutBasedOn": "Based on"
 }

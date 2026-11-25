@@ -1,5 +1,5 @@
 {
-  "appTitle": "StikSound",
+  "appTitle": "StickSound",
   "resetTooltip": "清除音频和贴纸并重新开始",
   "exportTooltip": "预览并复制。在聊天中粘贴将作为视频发送 (Ctrl+V)",
   "downloadTooltip": "下载视频（5 秒或 10 秒）",
@@ -34,12 +34,10 @@
   "formatBundle": "Sound Bundle (.stiksound.zip)",
   "formatWebp": "静态 WebP（512×512）",
   "menuMatte": "MP4 背景色",
-  "menuOpenProject": "打开 .stiksound.zip",
-  "menuSaveProject": "保存 .stiksound.zip",
   "menuLanguage": "语言",
   "menuAbout": "关于与许可证",
   "aboutSubtitle": "本地有声贴纸制作工具（5 秒或 10 秒）。100% 本地处理 · 无需账号或服务器。",
-  "aboutRights": "MyInstants 上的声音版权归原版权方所有。StikSound 完全在本地运行，不依赖外部工具。导出视频最长为 5 秒或 10 秒（默认 10 秒）。",
+  "aboutRights": "MyInstants 上的声音版权归原版权方所有。StickSound 完全在本地运行，不依赖外部工具。导出视频最长为 5 秒或 10 秒（默认 10 秒）。",
   "aboutLicenseLine": "基于 MIT / Apache-2.0 双重许可证发布。",
   "aboutThirdPartyTitle": "开源许可证与声明",
   "aboutThirdPartySummary": "核心组件：Tauri、React、fflate、mp4-muxer、webm-muxer (MIT)、Rust image/gif/webp/reqwest/serde (MIT / Apache-2.0)、zip (MIT) 与 symphonia (MPL-2.0)。完整列表请参阅仓库中的 THIRD_PARTY.md。",
@@ -63,5 +61,7 @@
   "gifError": "Could not load Tenor. Check your connection.",
   "uploadStickerBtn": "📁 Upload file",
   "zoomLabel": "Sticker zoom",
-  "cropReset": "Reset"
+  "cropReset": "Reset",
+  "aboutMadeBy": "Made by",
+  "aboutBasedOn": "Based on"
 }

@@ -1,6 +1,6 @@
 {
-  "name": "StikSound",
-  "short_name": "StikSound",
+  "name": "StickSound",
+  "short_name": "StickSound",
   "description": "Ponle sonido de hasta 5 o 10 segundos a tus stickers. Todo se procesa en tu dispositivo.",
   "lang": "es",
   "start_url": "./",

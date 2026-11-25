@@ -45,8 +45,6 @@ export interface ShellBridge {
    * Return "needs-tap" when the browser refused because the user gesture expired.
    */
   shareArtifact?(artifact: ExportArtifact): Promise<ShareOutcome>;
-  saveProjectZip?(zipBytes: Uint8Array, suggestedName: string): Promise<void>;
-  openProjectZip?(): Promise<Uint8Array | null>;
 }
 
 export interface PlatformOptions {
@@ -78,7 +76,9 @@ export interface StikSoundMinimalAppProps {
   gifSource?: GifSource;
 }
 
-const REPO_URL = "https://github.com/SilverFeit/StikSound";
+const REPO_URL = "https://github.com/hweg000/stickerslive";
+// MIT/Apache-2.0 require keeping the original copyright notice in copies of this fork.
+const ORIGINAL_REPO_URL = "https://github.com/SilverFeit/StikSound";
 
 const LOCALES: Record<LocaleCode, UiLabels> = {
   es: esLocale,
@@ -141,7 +141,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const stickerFileInputRef = useRef<HTMLInputElement>(null);
-  const projectZipInputRef = useRef<HTMLInputElement>(null);
   const audioElRef = useRef<HTMLAudioElement | null>(null);
   const previewVideoRef = useRef<HTMLVideoElement | null>(null);
   const playbackTimerRef = useRef<number | null>(null);
@@ -774,44 +773,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
       {menuOpen && (
         <div className="stik-popover" data-testid="overflow-menu">
           <div className="stik-popover-actions">
-            <button
-              type="button"
-              onClick={async () => {
-                setMenuOpen(false);
-                if (shell.openProjectZip) {
-                  const zipBytes = await shell.openProjectZip();
-                  if (zipBytes) {
-                    setReadyArtifact(null);
-                    const opened = await controller.openProject(zipBytes);
-                    const openedAssoc = opened.manifest.associations[0];
-                    if (openedAssoc && openedAssoc.end_ms - openedAssoc.start_ms > 5_000) {
-                      setMaxDurationMs(10_000);
-                    }
-                    setProject(opened);
-                  }
-                } else {
-                  projectZipInputRef.current?.click();
-                }
-              }}
-            >
-              {copy.menuOpenProject}
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                setMenuOpen(false);
-                try {
-                  const zipBytes = await controller.saveProject(project);
-                  if (shell.saveProjectZip) {
-                    await shell.saveProjectZip(zipBytes, `${project.manifest.project.name}.stiksound.zip`);
-                  }
-                } catch (err) {
-                  handleError(err);
-                }
-              }}
-            >
-              {copy.menuSaveProject}
-            </button>
             <label className="stik-popover-row">
               <span>{copy.menuLanguage}</span>
               <select
@@ -848,24 +809,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         onChange={async (e) => {
           const f = e.target.files?.[0];
           if (f) await importStickerBytes(new Uint8Array(await f.arrayBuffer()), f.name);
-          e.target.value = "";
-        }}
-      />
-      <input
-        ref={projectZipInputRef}
-        type="file"
-        accept=".zip,.stiksound.zip"
-        style={{ display: "none" }}
-        onChange={async (e) => {
-          const f = e.target.files?.[0];
-          if (f) {
-            try {
-              setReadyArtifact(null);
-              setProject(await controller.openProject(new Uint8Array(await f.arrayBuffer())));
-            } catch (err) {
-              handleError(err);
-            }
-          }
           e.target.value = "";
         }}
       />
@@ -915,7 +858,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         <main
           data-testid="sticker-zone"
           className={`stik-sticker-stage ${sticker ? "has-sticker crop-enabled" : "empty"}`}
-          style={stageBgStyle}
           onPointerDown={handleStagePointerDown}
           onPointerMove={handleStagePointerMove}
           onPointerUp={handleStagePointerEnd}
@@ -977,7 +919,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               <p className="stik-empty-hint">{copy.stickerDropHint}</p>
             </div>
           ) : (
-            <div className="stik-preview-box" ref={previewBoxRef}>
+            <div className="stik-preview-box" ref={previewBoxRef} style={stageBgStyle}>
               {stickerPreviewUrl && stickerIsVideo ? (
                 <video
                   ref={(el) => {
@@ -1201,8 +1143,20 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               <circle cx="193" cy="174" r="8" fill="#1A1033" />
             </svg>
 
-            <h3 className="stik-about-title">StikSound</h3>
+            <h3 className="stik-about-title">{copy.appTitle}</h3>
             <p className="stik-about-version">Version {appVersion}</p>
+            <p className="stik-about-credits" data-testid="about-credits">
+              {copy.aboutMadeBy}{" "}
+              <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+                hweg000
+              </a>
+              <br />
+              {copy.aboutBasedOn}{" "}
+              <a href={ORIGINAL_REPO_URL} target="_blank" rel="noopener noreferrer">
+                StikSound
+              </a>{" "}
+              © 2026 SilverFeit
+            </p>
             <p className="stik-about-subtitle">{copy.aboutSubtitle}</p>
             <p className="stik-about-rights">{copy.aboutRights}</p>
 

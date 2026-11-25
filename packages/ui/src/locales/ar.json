@@ -1,5 +1,5 @@
 {
-  "appTitle": "StikSound",
+  "appTitle": "StickSound",
   "resetTooltip": "مسح الصوت والملصق والبدء من جديد",
   "exportTooltip": "معاينة ونسخ. لصقه في الدردشة يرسله كفيديو (Ctrl+V)",
   "downloadTooltip": "تنزيل الفيديو (5 أو 10 ثوانٍ)",
@@ -34,12 +34,10 @@
   "formatBundle": "Sound Bundle (.stiksound.zip)",
   "formatWebp": "ملصق WebP ثابت (512×512)",
   "menuMatte": "لون خلفية MP4",
-  "menuOpenProject": "فتح .stiksound.zip",
-  "menuSaveProject": "حفظ .stiksound.zip",
   "menuLanguage": "اللغة",
   "menuAbout": "حول التطبيق والتراخيص",
   "aboutSubtitle": "أداة محلية لصنع الملصقات الصوتية (5 أو 10 ثوانٍ). معالجة محلية 100% · بدون حسابات أو خوادم.",
-  "aboutRights": "تظل الأصوات من MyInstants ملكًا لأصحابها. يعمل StikSound محليًا بالكامل بدون أدوات خارجية. المدة القصوى للفيديو 5 أو 10 ثوانٍ حسب الزر في شريط الصوت (10 افتراضيًا).",
+  "aboutRights": "تظل الأصوات من MyInstants ملكًا لأصحابها. يعمل StickSound محليًا بالكامل بدون أدوات خارجية. المدة القصوى للفيديو 5 أو 10 ثوانٍ حسب الزر في شريط الصوت (10 افتراضيًا).",
   "aboutLicenseLine": "منشور بموجب ترخيص مزدوج MIT / Apache-2.0.",
   "aboutThirdPartyTitle": "تراخيص المصادر المفتوحة والإشعارات",
   "aboutThirdPartySummary": "المكونات الأساسية: Tauri وReact وfflate وmp4-muxer وwebm-muxer (MIT)، وحزم Rust مثل image/gif/webp/reqwest/serde (MIT / Apache-2.0)، وzip (MIT)، وsymphonia (MPL-2.0). راجع THIRD_PARTY.md في المستودع للقائمة الكاملة.",
@@ -63,5 +61,7 @@
   "gifError": "Could not load Tenor. Check your connection.",
   "uploadStickerBtn": "📁 Upload file",
   "zoomLabel": "Sticker zoom",
-  "cropReset": "Reset"
+  "cropReset": "Reset",
+  "aboutMadeBy": "Made by",
+  "aboutBasedOn": "Based on"
 }

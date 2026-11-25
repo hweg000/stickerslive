@@ -1,5 +1,5 @@
 {
-  "appTitle": "StikSound",
+  "appTitle": "StickSound",
   "resetTooltip": "Effacer l'audio et le sticker pour repartir de zéro",
   "exportTooltip": "Prévisualiser et copier. Le coller dans le chat l'envoie en vidéo (Ctrl+V)",
   "downloadTooltip": "Télécharger la vidéo (5s ou 10s)",
@@ -34,12 +34,10 @@
   "formatBundle": "Sound Bundle (.stiksound.zip)",
   "formatWebp": "WebP statique (512×512)",
   "menuMatte": "Fond pour MP4",
-  "menuOpenProject": "Ouvrir .stiksound.zip",
-  "menuSaveProject": "Enregistrer .stiksound.zip",
   "menuLanguage": "Langue",
   "menuAbout": "À propos et licences",
   "aboutSubtitle": "Créateur local de stickers avec son (5s ou 10s). Traitement 100 % local · Sans compte ni serveur.",
-  "aboutRights": "Les sons de MyInstants restent la propriété de leurs auteurs. StikSound s'exécute 100 % localement sans dépendances externes. La vidéo exportée dure au maximum 5 ou 10 secondes selon le bouton de la barre audio (10 par défaut).",
+  "aboutRights": "Les sons de MyInstants restent la propriété de leurs auteurs. StickSound s'exécute 100 % localement sans dépendances externes. La vidéo exportée dure au maximum 5 ou 10 secondes selon le bouton de la barre audio (10 par défaut).",
   "aboutLicenseLine": "Publié sous double licence MIT / Apache-2.0.",
   "aboutThirdPartyTitle": "Licences open source et mentions",
   "aboutThirdPartySummary": "Composants principaux : Tauri, React, fflate, mp4-muxer, webm-muxer (MIT), Rust image/gif/webp/reqwest/serde (MIT / Apache-2.0), zip (MIT) et symphonia (MPL-2.0). Voir THIRD_PARTY.md dans le dépôt pour la liste complète.",
@@ -63,5 +61,7 @@
   "gifError": "Could not load Tenor. Check your connection.",
   "uploadStickerBtn": "📁 Upload file",
   "zoomLabel": "Sticker zoom",
-  "cropReset": "Reset"
+  "cropReset": "Reset",
+  "aboutMadeBy": "Made by",
+  "aboutBasedOn": "Based on"
 }

@@ -1,5 +1,5 @@
 {
-  "appTitle": "StikSound",
+  "appTitle": "StickSound",
   "resetTooltip": "Limpar áudio e sticker e recomeçar do zero",
   "exportTooltip": "Pré-visualizar e copiar. Colar no chat envia como vídeo (Ctrl+V)",
   "downloadTooltip": "Baixar vídeo (5s ou 10s)",
@@ -34,12 +34,10 @@
   "formatBundle": "Sound Bundle (.stiksound.zip)",
   "formatWebp": "Sticker WebP (512×512)",
   "menuMatte": "Fundo para MP4",
-  "menuOpenProject": "Abrir .stiksound.zip",
-  "menuSaveProject": "Salvar .stiksound.zip",
   "menuLanguage": "Idioma",
   "menuAbout": "Sobre e licenças",
   "aboutSubtitle": "Criador local de stickers com som (5s ou 10s). Processamento 100% local · Sem contas ou servidores.",
-  "aboutRights": "Os sons do MyInstants pertencem aos seus respectivos autores. O StikSound processa tudo localmente sem ferramentas externas. O vídeo exportado dura no máximo 5 ou 10 segundos, conforme o botão na barra de áudio (10 por padrão).",
+  "aboutRights": "Os sons do MyInstants pertencem aos seus respectivos autores. O StickSound processa tudo localmente sem ferramentas externas. O vídeo exportado dura no máximo 5 ou 10 segundos, conforme o botão na barra de áudio (10 por padrão).",
   "aboutLicenseLine": "Distribuído sob licença dupla MIT / Apache-2.0.",
   "aboutThirdPartyTitle": "Licenças de código aberto e avisos",
   "aboutThirdPartySummary": "Componentes principais: Tauri, React, fflate, mp4-muxer, webm-muxer (MIT), Rust image/gif/webp/reqwest/serde (MIT / Apache-2.0), zip (MIT) e symphonia (MPL-2.0). Consulte THIRD_PARTY.md no repositório para a lista completa.",
@@ -63,5 +61,7 @@
   "gifError": "Could not load Tenor. Check your connection.",
   "uploadStickerBtn": "📁 Upload file",
   "zoomLabel": "Sticker zoom",
-  "cropReset": "Reset"
+  "cropReset": "Reset",
+  "aboutMadeBy": "Made by",
+  "aboutBasedOn": "Based on"
 }

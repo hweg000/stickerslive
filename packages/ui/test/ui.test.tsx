@@ -329,6 +329,13 @@ describe("StikSoundMinimalApp UI", () => {
     expect(aboutModal.textContent).toContain("Apache-2.0");
     expect(aboutModal.textContent).not.toContain("Copyright");
     expect(aboutModal.textContent).toContain("symphonia");
+    // Fork credits: author + the original project and its copyright holder (required by MIT/Apache-2.0)
+    const credits = screen.getByTestId("about-credits");
+    expect(credits.textContent).toContain("hweg000");
+    expect(credits.textContent).toContain("StikSound");
+    expect(credits.textContent).toContain("© 2026 SilverFeit");
+    const hrefs = [...credits.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+    expect(hrefs).toEqual(["https://github.com/hweg000/stickerslive", "https://github.com/SilverFeit/StikSound"]);
   });
 
   it("sound browser lists MyInstants results and 'Use' imports the picked sound through the providers", async () => {

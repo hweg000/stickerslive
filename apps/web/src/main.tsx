@@ -97,9 +97,6 @@ const shell: ShellBridge = {
   },
   async saveArtifact(artifact) {
     await saveFile(toFile(artifact));
-  },
-  async saveProjectZip(zipBytes, suggestedName) {
-    await saveFile(new File([zipBytes.slice().buffer], suggestedName, { type: "application/zip" }));
   }
 };
 

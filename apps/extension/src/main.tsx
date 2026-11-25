@@ -40,9 +40,6 @@ const shell: ShellBridge = {
         // Fallback: user can use the inline Download button or drag the preview video
       }
     }
-  },
-  async saveProjectZip(zipBytes: Uint8Array, suggestedName: string) {
-    await downloadBytes(zipBytes, suggestedName, "application/zip");
   }
 };
 
