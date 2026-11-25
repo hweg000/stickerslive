@@ -14,6 +14,25 @@ body {
   height: 100dvh;
   padding: calc(14px + env(safe-area-inset-top)) calc(14px + env(safe-area-inset-right))
     calc(14px + env(safe-area-inset-bottom)) calc(14px + env(safe-area-inset-left));
+  /* Safety net on short phones: scroll instead of clipping the audio bar */
+  overflow-y: auto;
+}
+
+/* The popover's fixed top ignores the notch in the installed (standalone) app */
+.stik-popover {
+  top: calc(60px + env(safe-area-inset-top));
+}
+
+.stik-sound-browser {
+  max-height: 85vh;
+  max-height: 85dvh;
+}
+
+/* Short phones (iPhone SE/mini, Android with toolbars): give the audio bar room */
+@media (max-height: 720px) {
+  .stik-sticker-stage {
+    min-height: 170px;
+  }
 }
 
 @media (pointer: coarse) {
@@ -46,11 +65,6 @@ body {
   .stik-play-btn {
     min-width: 44px;
     min-height: 44px;
-  }
-
-  .stik-preview-box {
-    width: min(74vw, 320px);
-    height: min(74vw, 320px);
   }
 
   .stik-empty-title {

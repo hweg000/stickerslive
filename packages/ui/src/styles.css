@@ -340,6 +340,16 @@ textarea {
   align-items: center;
 }
 
+/* URL field gets its own row; next to the long "Choose sound" button it got squeezed to a few chars */
+.stik-audio-empty-form .stik-url-input {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.stik-audio-empty-form .stik-pill-btn:not(.stik-browse-btn) {
+  flex: 1 1 auto;
+}
+
 .stik-browse-btn {
   flex-basis: 100%;
   padding: 10px 14px;

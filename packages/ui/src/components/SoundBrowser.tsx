@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { IconClose, IconPlay, IconSpinner, IconStop } from "./icons";
 
+// On phones, focusing the search box on open pops the keyboard over the results.
+const isTouch = typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches === true;
+
 export interface SoundSearchResult {
   title: string;
   media_url: string;
@@ -111,7 +114,7 @@ export const SoundBrowser = ({ search, onPick, onClose, labels }: SoundBrowserPr
             data-testid="sound-search-input"
             placeholder={labels.placeholder}
             value={query}
-            autoFocus
+            autoFocus={!isTouch}
             onChange={(e) => setQuery(e.target.value)}
           />
         </form>

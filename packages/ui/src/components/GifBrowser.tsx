@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { IconClose, IconSpinner } from "./icons";
 
+// On phones, focusing the search box on open pops the keyboard over the results.
+const isTouch = typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches === true;
+
 export interface GifSearchResult {
   title: string;
   preview_url: string;
@@ -76,7 +79,7 @@ export const GifBrowser = ({ search, onPick, onClose, labels }: GifBrowserProps)
             data-testid="gif-search-input"
             placeholder={labels.placeholder}
             value={query}
-            autoFocus
+            autoFocus={!isTouch}
             onChange={(e) => setQuery(e.target.value)}
           />
         </form>
