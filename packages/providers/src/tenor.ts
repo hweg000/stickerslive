@@ -10,6 +10,10 @@ export interface GifResult {
   /** Preview size from the page, so the grid can reserve the right shape before it loads. */
   width?: number;
   height?: number;
+  /** Where the result came from; results of different providers are never mixed in one list. */
+  provider?: "klipy" | "tenor";
+  /** KLIPY only: small GIF used when the medium one is too heavy. */
+  small_url?: string;
 }
 
 // Server-rendered results: <img src="https://media.tenor.com/<id>AAAAM/<slug>.gif" ... alt="...">.
@@ -51,7 +55,7 @@ export function gifFrameStats(b: Uint8Array): { width: number; height: number; f
   return { width, height, frames };
 }
 
-function fitsStickerLimits(bytes: Uint8Array): boolean {
+export function fitsStickerLimits(bytes: Uint8Array): boolean {
   if (bytes.byteLength > MAX_DOWNLOAD_BYTES) return false;
   const s = gifFrameStats(bytes);
   if (!s) return false;

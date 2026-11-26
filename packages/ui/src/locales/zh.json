@@ -118,5 +118,6 @@
   "galleryPublishRateLimited": "You reached today’s publishing limit. Try again tomorrow.",
   "galleryPublishTooBig": "The video is too large for the gallery (5 MB max). Export it with the 5s button or a White/Black background (MP4) and try again.",
   "tabCreate": "✨ Create",
-  "tabCommunity": "🌟 Community"
+  "tabCommunity": "🌟 Community",
+  "galleryPublishBlocked": "This sticker uses a GIF from the search (KLIPY/Tenor), whose terms do not allow storing it in the gallery. To publish, make one from your own image or GIF (“Upload file”)."
 }

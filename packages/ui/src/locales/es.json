@@ -118,5 +118,6 @@
   "galleryPublishRateLimited": "Llegaste al límite de publicaciones de hoy. Inténtalo mañana.",
   "galleryPublishTooBig": "El video pesa demasiado para la galería (máximo 5 MB). Expórtalo con el botón de 5s o con fondo Blanco/Negro (MP4) e inténtalo de nuevo.",
   "tabCreate": "✨ Crear",
-  "tabCommunity": "🌟 Comunidad"
+  "tabCommunity": "🌟 Comunidad",
+  "galleryPublishBlocked": "Este sticker usa un GIF del buscador (KLIPY/Tenor) y sus condiciones no permiten guardarlo en la galería. Para publicar, crea uno con tu propia imagen o GIF («Subir archivo»)."
 }

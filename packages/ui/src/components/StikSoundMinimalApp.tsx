@@ -157,6 +157,9 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   const [waGuideOpen, setWaGuideOpen] = useState(false);
   const closeWaGuide = useCallback(() => setWaGuideOpen(false), []);
   const [publishOpen, setPublishOpen] = useState(false);
+  // GIFs found through search (KLIPY/Tenor) may not be stored in our gallery (KLIPY API terms):
+  // only stickers made from the user's own files can be published.
+  const [stickerFromSearch, setStickerFromSearch] = useState(false);
   // "Crear" / "Comunidad" tabs; the community tab has its own link (#galeria).
   const [view, setView] = useState<"create" | "community">(() =>
     gallery && typeof location !== "undefined" && location.hash === "#galeria" ? "community" : "create"
@@ -259,7 +262,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   );
 
   const importStickerBytes = useCallback(
-    async (bytes: Uint8Array, name: string) => {
+    async (bytes: Uint8Array, name: string, fromSearch = false) => {
       setIsBusy(true);
       setErrorMessage(null);
       setStatusMessage(null);
@@ -268,6 +271,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
       try {
         const next = await controller.importSticker(project, bytes, name, effectiveMaxAudioMs);
         setProject(next);
+        setStickerFromSearch(fromSearch);
         const nextAudio = next.manifest.audios[0];
         const peaks = next.waveformPeaks;
         if (nextAudio?.source.type === "video-track" && peaks && peaks.maxs.every((v) => v === 0)) {
@@ -322,7 +326,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         setIsBusy(false);
         return;
       }
-      await importStickerBytes(bytes, gif.gif_url.split("/").pop() || "tenor.gif");
+      await importStickerBytes(bytes, gif.gif_url.split("/").pop() || "gif.gif", true);
     },
     [gifSource, handleError, importStickerBytes]
   );
@@ -505,6 +509,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   const handleResetAll = () => {
     stopPlayback();
     setChangingAudio(false);
+    setStickerFromSearch(false);
     setProject((prev) => resetProject(prev));
     setReadyArtifact(null);
     setDownloadMenuOpen(false);
@@ -1011,7 +1016,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
               {copy.backToEditBtn}
             </button>
           </div>
-          {gallery && (
+          {gallery && !stickerFromSearch && (
             <button
               type="button"
               data-testid="publish-btn"
@@ -1020,6 +1025,11 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             >
               {copy.galleryPublishBtn}
             </button>
+          )}
+          {gallery && stickerFromSearch && (
+            <p className="stik-empty-hint stik-publish-blocked" data-testid="publish-blocked">
+              {copy.galleryPublishBlocked}
+            </p>
           )}
           <button
             type="button"
@@ -1275,7 +1285,7 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
           onPick={(gif) => void importGif(gif)}
           labels={{
             title: copy.gifBrowserTitle,
-            placeholder: copy.gifSearchPlaceholder,
+            placeholder: gifSource.placeholder ?? copy.gifSearchPlaceholder,
             empty: copy.gifEmpty,
             error: copy.gifError,
             close: copy.close

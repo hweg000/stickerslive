@@ -728,3 +728,42 @@ describe("community gallery", () => {
     await waitFor(() => expect(screen.getByText("publishTooBig")).toBeTruthy());
   });
 });
+
+describe("GIF search attribution and gallery rule", () => {
+  it("shows KLIPY's required placeholder and attribution, and blocks publishing stickers made from searched GIFs", async () => {
+    const gif = {
+      title: "cat",
+      preview_url: "https://static.klipy.com/sm/a.webp",
+      gif_url: "https://static.klipy.com/md/a.gif",
+      provider: "klipy" as const
+    };
+    const resolve = vi.fn(async (url: string) => ({ page_url: null, media_url: url, title: null, bytes: new Uint8Array([1, 2, 3, 4]) }));
+    render(
+      <StikSoundMinimalApp
+        engine={createTestEngine(400, 400, true)}
+        providers={[{ id: "myinstants", canResolve: () => true, resolve }]}
+        shell={{ saveArtifact: vi.fn() }}
+        initialLocale="es"
+        gifSource={{ placeholder: "Search KLIPY", search: async () => [gif], download: async () => new Uint8Array([0x47, 0x49, 0x46, 0x38]) }}
+        soundSearch={async () => [{ title: "Bruh", media_url: "https://www.myinstants.com/media/sounds/bruh.mp3" }]}
+        gallery={{ list: vi.fn(async () => []), mediaUrl: () => "", submit: vi.fn(), report: vi.fn() }}
+      />
+    );
+
+    fireEvent.click(screen.getByTestId("browse-gifs-btn"));
+    expect((screen.getByTestId("gif-search-input") as HTMLInputElement).placeholder).toBe("Search KLIPY");
+    await waitFor(() => expect(screen.getByTestId("gif-attribution").textContent).toBe("Powered by KLIPY"));
+    fireEvent.click(screen.getByTestId("gif-item"));
+    await waitFor(() => expect(screen.getByTestId("sticker-zone").className).toContain("has-sticker"));
+
+    fireEvent.click(screen.getByTestId("browse-sounds-btn"));
+    await waitFor(() => expect(screen.getByTestId("sound-use-btn")).toBeTruthy());
+    fireEvent.click(screen.getByTestId("sound-use-btn"));
+    await waitFor(() => expect(screen.getByTestId("play-preview-btn")).toBeTruthy());
+
+    fireEvent.click(screen.getByTestId("export-ok-btn"));
+    await waitFor(() => expect(screen.getByTestId("video-preview-ready")).toBeTruthy());
+    expect(screen.queryByTestId("publish-btn")).toBeNull();
+    expect(screen.getByTestId("publish-blocked").textContent).toContain("KLIPY");
+  });
+});

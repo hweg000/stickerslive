@@ -5,3 +5,4 @@ export {
   type TimelineTrimBarProps as Timeline5sBarProps
 } from "./components/TimelineTrimBar";
 export type { GalleryClient, GalleryItem } from "./components/Gallery";
+export type { GifSource, GifSearchResult } from "./components/GifBrowser";

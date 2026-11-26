@@ -2,12 +2,13 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { detectLocale, type ExportArtifact, type LocaleCode } from "@stiksound/core";
 import { WebMediaEngine } from "@stiksound/media-web";
-import { MyInstantsProvider, TenorGifSource, type FetchLike } from "@stiksound/providers";
+import { KlipyGifSource, MyInstantsProvider, TenorGifSource, type FetchLike } from "@stiksound/providers";
 import { galleryClient } from "./gallery-client";
 import { AdminApp } from "./admin";
 import {
   StikSoundMinimalApp,
   type ShareOutcome,
+  type GifSource,
   type ShellBridge,
   type UiLabels
 } from "@stiksound/ui";
@@ -36,7 +37,21 @@ const proxiedFetch: FetchLike = (input, init) =>
     init
   );
 const myInstants = new MyInstantsProvider(proxiedFetch);
-const gifSource = new TenorGifSource(proxiedFetch);
+const klipyGifs = new KlipyGifSource();
+const tenorGifs = new TenorGifSource(proxiedFetch);
+// KLIPY first. Tenor only when KLIPY is unavailable (no key yet, rate limit, outage), and each
+// search comes from a single provider: KLIPY terms forbid mixing its results with other sources.
+const gifSource: GifSource = {
+  placeholder: "Search KLIPY", // required by KLIPY attribution guidelines
+  async search(query) {
+    try {
+      return await klipyGifs.search(query);
+    } catch {
+      return tenorGifs.search(query);
+    }
+  },
+  download: (gif) => (gif.provider === "klipy" ? klipyGifs.download(gif) : tenorGifs.download(gif))
+};
 const providers = [myInstants];
 const searchMyInstants = (query: string, page: number) => myInstants.search(query, page);
 
@@ -114,7 +129,7 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
     downloadFmtMp4: "Video MP4 (5s / 10s)",
     exportSuccessVideo: "Listo. Si no elegiste dónde guardarlo, búscalo en Archivos → Descargas.",
     aboutRights:
-      "Versión web. Tus imágenes, GIFs, audios y grabaciones se procesan en tu dispositivo y no se suben a ningún servidor. Los buscadores consultan MyInstants (sonidos) y Tenor (GIFs). Solo si tú tocas «Publicar en la galería», ese sticker se sube y, después de revisarlo, se vuelve público. Usamos Microsoft Clarity para ver de forma anónima cómo se usa la app y mejorarla. El video dura como máximo 5 o 10 segundos, según el botón de la barra (por defecto, 10).",
+      "Versión web. Tus imágenes, GIFs, audios y grabaciones se procesan en tu dispositivo y no se suben a ningún servidor. Los buscadores consultan MyInstants (sonidos) y KLIPY (GIFs; Tenor como respaldo). StickSound es una app independiente: no es un producto de KLIPY ni está respaldada por KLIPY. Solo si tú tocas «Publicar en la galería», ese sticker se sube y, después de revisarlo, se vuelve público. Usamos Microsoft Clarity para ver de forma anónima cómo se usa la app y mejorarla. El video dura como máximo 5 o 10 segundos, según el botón de la barra (por defecto, 10).",
     ...(isTouch
       ? {
         stickerDropTitle: "Toca para elegir tu sticker",
@@ -134,7 +149,7 @@ const webLabels: Record<LocaleCode, Partial<UiLabels>> = {
     downloadFmtMp4: "MP4 video (5s / 10s)",
     exportSuccessVideo: "Done. If you didn't pick a place, look in Files → Downloads.",
     aboutRights:
-      "Web version. Your images, GIFs, audio and recordings are processed on your device and never uploaded to any server. The search boxes query MyInstants (sounds) and Tenor (GIFs). Only if you tap “Publish to the gallery” is that sticker uploaded, and it becomes public after review. We use Microsoft Clarity to see anonymously how the app is used and improve it. The video is at most 5 or 10 seconds, chosen with the bar button (10 by default).",
+      "Web version. Your images, GIFs, audio and recordings are processed on your device and never uploaded to any server. The search boxes query MyInstants (sounds) and KLIPY (GIFs; Tenor as a fallback). StickSound is an independent app: it is not a KLIPY product and is not endorsed by KLIPY. Only if you tap “Publish to the gallery” is that sticker uploaded, and it becomes public after review. We use Microsoft Clarity to see anonymously how the app is used and improve it. The video is at most 5 or 10 seconds, chosen with the bar button (10 by default).",
     ...(isTouch
       ? {
         stickerDropTitle: "Tap to choose your sticker",

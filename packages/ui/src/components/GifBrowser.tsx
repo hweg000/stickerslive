@@ -10,12 +10,19 @@ export interface GifSearchResult {
   gif_url: string;
   width?: number;
   height?: number;
+  provider?: "klipy" | "tenor";
+  small_url?: string;
 }
 
 export interface GifSource {
   search(query: string): Promise<GifSearchResult[]>;
   download(gif: GifSearchResult): Promise<Uint8Array>;
+  /** Search box text required by the provider (KLIPY: "Search KLIPY"); falls back to the label. */
+  placeholder?: string;
 }
+
+/** Provider attribution under the results (KLIPY terms require visible attribution). */
+const ATTRIBUTION: Record<"klipy" | "tenor", string> = { klipy: "Powered by KLIPY", tenor: "via Tenor" };
 
 export interface GifBrowserProps {
   search: GifSource["search"];
@@ -119,6 +126,11 @@ export const GifBrowser = ({ search, onPick, onClose, labels }: GifBrowserProps)
         )}
         {!loading && failed && <p className="stik-sound-status">{labels.error}</p>}
         {!loading && !failed && results.length === 0 && <p className="stik-sound-status">{labels.empty}</p>}
+        {!loading && results[0]?.provider && (
+          <p className="stik-gif-attribution" data-testid="gif-attribution">
+            {ATTRIBUTION[results[0].provider]}
+          </p>
+        )}
       </div>
     </div>
   );
