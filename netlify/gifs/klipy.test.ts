@@ -73,6 +73,21 @@ describe("KLIPY GIF search function", () => {
     expect(await broken.text()).not.toContain("SECRET");
   });
 
+  it("picks the largest GIF under the sticker size cap (KLIPY md GIFs can be ~15 MB)", () => {
+    const heavy = {
+      slug: "heavy",
+      title: "Heavy",
+      file: {
+        md: { gif: { url: "https://static.klipy.com/md/h.gif", size: 14_914_431 } },
+        sm: { gif: { url: "https://static.klipy.com/sm/h.gif", size: 314_884 }, webp: { url: "https://static.klipy.com/sm/h.webp" } },
+        xs: { gif: { url: "https://static.klipy.com/xs/h.gif", size: 71_468 } }
+      }
+    };
+    const [m] = mapKlipyItems({ data: { data: [heavy] } });
+    expect(m!.gif_url).toBe("https://static.klipy.com/sm/h.gif");
+    expect(m!.small_url).toBe("https://static.klipy.com/xs/h.gif");
+  });
+
   it("only allows https media on klipy.com hosts", () => {
     expect(isKlipyMediaUrl("https://static.klipy.com/a.gif")).toBe(true);
     expect(isKlipyMediaUrl("http://static.klipy.com/a.gif")).toBe(false);

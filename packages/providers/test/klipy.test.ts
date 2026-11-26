@@ -68,6 +68,22 @@ describe("KLIPY GIF source (browser side)", () => {
     expect(await src.download(gif)).toEqual(ok);
     expect(requested).toEqual(["https://static.klipy.com/md/a.gif", "https://static.klipy.com/sm/a.gif"]);
 
+    // An oversized file is skipped from its Content-Length, without reading the body
+    let bodyRead = false;
+    const lazy = new KlipyGifSource(async (u) => {
+      if (String(u).includes("/md/")) {
+        const heavy = new Response(null, { headers: { "content-length": String(15 * 1024 * 1024) } });
+        heavy.arrayBuffer = async () => {
+          bodyRead = true;
+          return new ArrayBuffer(0);
+        };
+        return heavy;
+      }
+      return new Response(ok);
+    });
+    expect(await lazy.download(gif)).toEqual(ok);
+    expect(bodyRead).toBe(false);
+
     await expect(src.download({ ...gif, gif_url: "https://evil.example/x.gif" })).rejects.toThrow(/not allowed/);
     expect(isKlipyMediaUrl("https://static.klipy.com.evil.example/x.gif")).toBe(false);
   });

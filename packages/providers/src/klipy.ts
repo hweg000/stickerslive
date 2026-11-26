@@ -1,6 +1,6 @@
 import { StikSoundError } from "@stiksound/core";
 import type { FetchLike } from "./myinstants-provider";
-import { fitsStickerLimits, type GifResult } from "./tenor";
+import { MAX_DOWNLOAD_BYTES, fitsStickerLimits, type GifResult } from "./tenor";
 
 /** Only https media from KLIPY's own hosts is downloaded (mirrors the server-side check). */
 export function isKlipyMediaUrl(raw: unknown): raw is string {
@@ -59,6 +59,12 @@ export class KlipyGifSource {
       if (!isKlipyMediaUrl(url)) throw new StikSoundError("url-rejected", "GIF host not allowed.");
       const res = await this.fetchFn(url, { credentials: "omit" });
       if (!res.ok) continue;
+      // Skip an oversized file before downloading its body (saves mobile data).
+      if (Number(res.headers.get("content-length")) > MAX_DOWNLOAD_BYTES) {
+        await res.body?.cancel().catch(() => undefined);
+        anyTooBig = true;
+        continue;
+      }
       const bytes = new Uint8Array(await res.arrayBuffer());
       if (fitsStickerLimits(bytes)) return bytes;
       anyTooBig = true;

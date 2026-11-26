@@ -22,7 +22,7 @@ export interface GifResult {
 const SIZE_FALLBACKS = ["AAAAd", "AAAAM", "AAAAS"] as const;
 // Keep well under the decoder's 256 MB cap; a 512 px sticker gains nothing from bigger GIFs.
 const MAX_DECODED_BYTES = LIMITS.MAX_GIF_DECODED_BYTES / 2;
-const MAX_DOWNLOAD_BYTES = 8 * 1024 * 1024;
+export const MAX_DOWNLOAD_BYTES = 8 * 1024 * 1024;
 
 /** Canvas size and frame count from a GIF's block structure (heuristic only; the engine validates fully). */
 export function gifFrameStats(b: Uint8Array): { width: number; height: number; frames: number } | null {
