@@ -44,6 +44,7 @@ export interface GalleryLabels {
   publishSent: string;
   publishError: string;
   publishRateLimited: string;
+  publishTooBig: string;
 }
 
 const Modal = ({ children, onClose, label, testId }: { children: React.ReactNode; onClose(): void; label: string; testId: string }) => (
@@ -83,7 +84,7 @@ export const PublishDialog = ({
   const [author, setAuthor] = useState("");
   const [title, setTitle] = useState("");
   const [consent, setConsent] = useState(false);
-  const [state, setState] = useState<"idle" | "sending" | "sent" | "error" | "limited">("idle");
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "error" | "limited" | "tooBig">("idle");
 
   return (
     <Modal onClose={onClose} label={labels.publishTitle} testId="publish-dialog">
@@ -103,7 +104,8 @@ export const PublishDialog = ({
               await onSubmit(author, title);
               setState("sent");
             } catch (err) {
-              setState((err as { status?: number })?.status === 429 ? "limited" : "error");
+              const status = (err as { status?: number })?.status;
+              setState(status === 429 ? "limited" : status === 413 ? "tooBig" : "error");
             }
           }}
         >
@@ -134,6 +136,7 @@ export const PublishDialog = ({
           </label>
           {state === "error" && <p className="stik-toast error">{labels.publishError}</p>}
           {state === "limited" && <p className="stik-toast error">{labels.publishRateLimited}</p>}
+          {state === "tooBig" && <p className="stik-toast error">{labels.publishTooBig}</p>}
           <button
             type="submit"
             data-testid="publish-send"

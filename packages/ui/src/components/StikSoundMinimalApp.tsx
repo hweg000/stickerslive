@@ -674,7 +674,8 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
     publishSend: copy.galleryPublishSend,
     publishSent: copy.galleryPublishSent,
     publishError: copy.galleryPublishError,
-    publishRateLimited: copy.galleryPublishRateLimited
+    publishRateLimited: copy.galleryPublishRateLimited,
+    publishTooBig: copy.galleryPublishTooBig
   };
 
   // Mirrors computeSquareCrop exactly, so the preview is what gets exported.

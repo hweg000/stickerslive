@@ -116,5 +116,6 @@
   "galleryPublishSend": "Enviar a revisión",
   "galleryPublishSent": "¡Enviado! Lo revisaremos antes de que aparezca en la galería.",
   "galleryPublishError": "No se pudo enviar. Revisa tu conexión e inténtalo otra vez.",
-  "galleryPublishRateLimited": "Llegaste al límite de publicaciones de hoy. Inténtalo mañana."
+  "galleryPublishRateLimited": "Llegaste al límite de publicaciones de hoy. Inténtalo mañana.",
+  "galleryPublishTooBig": "El video pesa demasiado para la galería (máximo 5 MB). Expórtalo con el botón de 5s o con fondo Blanco/Negro (MP4) e inténtalo de nuevo."
 }

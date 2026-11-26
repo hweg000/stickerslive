@@ -48,7 +48,9 @@ export interface GalleryMeta {
 export type PublicItem = Pick<GalleryMeta, "id" | "author" | "title" | "createdAt">;
 
 export const LIMITS = {
-  videoMaxBytes: 2 * 1024 * 1024, // a 5-10 s 512px sticker is well under this
+  // 5-10 s at ~1.2 Mbps is ~1-2 MB, but transparent WebM (MediaRecorder) runs higher.
+  // Netlify caps a function request at 6 MB, so 5 MB leaves room for the thumbnail.
+  videoMaxBytes: 5 * 1024 * 1024,
   thumbMaxBytes: 200 * 1024,
   authorMaxChars: 30,
   titleMaxChars: 60,

@@ -42,6 +42,10 @@ export const galleryClient: GalleryClient = {
     return `${API}/media/${encodeURIComponent(id)}/${kind}`;
   },
   async submit({ video, thumb, thumbBackground, author, title }) {
+    // Same cap as the server (netlify/gallery/router.ts LIMITS.videoMaxBytes): fail before uploading.
+    if (video.bytes.byteLength > 5 * 1024 * 1024) {
+      throw Object.assign(new Error("video-too-large"), { status: 413 });
+    }
     const form = new FormData();
     form.append("video", new Blob([video.bytes.slice().buffer], { type: video.mimeType }), video.fileName);
     form.append("thumb", await thumbnailJpeg(thumb, thumbBackground), "thumb.jpg");

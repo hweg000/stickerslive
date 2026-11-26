@@ -116,5 +116,6 @@
   "galleryPublishSend": "Send for review",
   "galleryPublishSent": "Sent! We will review it before it shows up in the gallery.",
   "galleryPublishError": "Could not send it. Check your connection and try again.",
-  "galleryPublishRateLimited": "You reached today’s publishing limit. Try again tomorrow."
+  "galleryPublishRateLimited": "You reached today’s publishing limit. Try again tomorrow.",
+  "galleryPublishTooBig": "The video is too large for the gallery (5 MB max). Export it with the 5s button or a White/Black background (MP4) and try again."
 }

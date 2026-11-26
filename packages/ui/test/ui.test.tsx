@@ -695,5 +695,14 @@ describe("community gallery", () => {
     fireEvent.click(screen.getByTestId("publish-consent"));
     fireEvent.submit((screen.getByTestId("publish-send") as HTMLButtonElement).closest("form")!);
     await waitFor(() => expect(screen.getByText("publishRateLimited")).toBeTruthy());
+    cleanup();
+
+    const tooBig = vi.fn(async () => {
+      throw Object.assign(new Error("video-too-large"), { status: 413 });
+    });
+    render(<PublishDialog labels={labels} onClose={vi.fn()} onSubmit={tooBig} />);
+    fireEvent.click(screen.getByTestId("publish-consent"));
+    fireEvent.submit((screen.getByTestId("publish-send") as HTMLButtonElement).closest("form")!);
+    await waitFor(() => expect(screen.getByText("publishTooBig")).toBeTruthy());
   });
 });
