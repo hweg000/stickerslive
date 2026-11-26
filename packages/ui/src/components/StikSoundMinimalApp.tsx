@@ -157,7 +157,10 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
   const [waGuideOpen, setWaGuideOpen] = useState(false);
   const closeWaGuide = useCallback(() => setWaGuideOpen(false), []);
   const [publishOpen, setPublishOpen] = useState(false);
-  const [galleryOpen, setGalleryOpen] = useState(false);
+  // "Crear" / "Comunidad" tabs; the community tab has its own link (#galeria).
+  const [view, setView] = useState<"create" | "community">(() =>
+    gallery && typeof location !== "undefined" && location.hash === "#galeria" ? "community" : "create"
+  );
   const [readyArtifact, setReadyArtifact] = useState<ExportArtifact | null>(null);
   const [maxDurationMs, setMaxDurationMs] = useState<5000 | 10000>(10_000);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -487,6 +490,18 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
     });
   }, [isPlaying, stopPlayback, audio, assoc, project.assets, videoOffsetMs]);
 
+  const switchView = (next: "create" | "community") => {
+    stopPlayback();
+    setMenuOpen(false);
+    setDownloadMenuOpen(false);
+    setView(next);
+    try {
+      history.replaceState(null, "", next === "community" ? "#galeria" : location.pathname + location.search);
+    } catch {
+      // ignore: the tab still switches, only the link is not updated
+    }
+  };
+
   const handleResetAll = () => {
     stopPlayback();
     setChangingAudio(false);
@@ -772,16 +787,18 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
     >
       <header className="stik-top-corners">
         <div className="stik-right-actions">
-          <button
-            type="button"
-            data-testid="reset-all-btn"
-            className="stik-corner-btn stik-reset-btn"
-            title={copy.resetTooltip}
-            aria-label={copy.resetTooltip}
-            onClick={handleResetAll}
-          >
-            <IconClose />
-          </button>
+          {view === "create" && (
+            <button
+              type="button"
+              data-testid="reset-all-btn"
+              className="stik-corner-btn stik-reset-btn"
+              title={copy.resetTooltip}
+              aria-label={copy.resetTooltip}
+              onClick={handleResetAll}
+            >
+              <IconClose />
+            </button>
+          )}
           {/* Help lives in the header (not the ⋯ menu) so first-time users actually find it */}
           <button
             type="button"
@@ -825,19 +842,46 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
             <IconMore />
           </button>
 
-          <button
-            type="button"
-            data-testid="export-ok-btn"
-            className={`stik-corner-btn stik-ok-btn ${canExport ? "ready" : "disabled"}`}
-            disabled={!canExport}
-            title={exportDisabledReason}
-            aria-label={exportDisabledReason}
-            onClick={handlePreviewAndCopyArrow}
-          >
-            {isBusy ? <IconSpinner /> : <IconArrow />}
-          </button>
+          {view === "create" && (
+            <button
+              type="button"
+              data-testid="export-ok-btn"
+              className={`stik-corner-btn stik-ok-btn ${canExport ? "ready" : "disabled"}`}
+              disabled={!canExport}
+              title={exportDisabledReason}
+              aria-label={exportDisabledReason}
+              onClick={handlePreviewAndCopyArrow}
+            >
+              {isBusy ? <IconSpinner /> : <IconArrow />}
+            </button>
+          )}
         </div>
       </header>
+
+      {gallery && (
+        <nav className="stik-tabs" role="tablist" aria-label={copy.galleryTitle}>
+          <button
+            type="button"
+            role="tab"
+            data-testid="tab-create"
+            aria-selected={view === "create"}
+            className={view === "create" ? "active" : ""}
+            onClick={() => switchView("create")}
+          >
+            {copy.tabCreate}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            data-testid="tab-community"
+            aria-selected={view === "community"}
+            className={view === "community" ? "active" : ""}
+            onClick={() => switchView("community")}
+          >
+            {copy.tabCommunity}
+          </button>
+        </nav>
+      )}
 
       {downloadMenuOpen && sticker && (
         <div className="stik-popover" data-testid="download-format-picker">
@@ -923,6 +967,10 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         }}
       />
 
+      {view === "community" && gallery ? (
+        <GalleryBrowser client={gallery} labels={galleryLabels} />
+      ) : (
+      <>
       {readyArtifact ? (
         <main className="stik-preview-ready-card" data-testid="video-preview-ready">
           {readyVideoUrl ? (
@@ -1039,19 +1087,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
                 {copy.uploadStickerBtn}
               </button>
               <p className="stik-empty-hint">{copy.stickerDropHint}</p>
-              {gallery && (
-                <button
-                  type="button"
-                  data-testid="open-gallery-btn"
-                  className="stik-link-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setGalleryOpen(true);
-                  }}
-                >
-                  {copy.galleryOpenBtn}
-                </button>
-              )}
             </div>
           ) : !sticker ? (
             <div className="stik-empty-sticker">
@@ -1230,6 +1265,8 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
           cancelBtn: copy.cancelBtn
         }}
       />
+      </>
+      )}
 
       {gifBrowserOpen && gifSource && (
         <GifBrowser
@@ -1306,9 +1343,6 @@ export const StikSoundMinimalApp: React.FC<StikSoundMinimalAppProps> = ({
         />
       )}
 
-      {gallery && galleryOpen && (
-        <GalleryBrowser client={gallery} labels={galleryLabels} onClose={() => setGalleryOpen(false)} />
-      )}
 
       {waGuideOpen && (
         <Tour

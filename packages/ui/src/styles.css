@@ -701,6 +701,54 @@ textarea {
   flex-shrink: 0;
 }
 
+/* "Crear" / "Comunidad" tabs under the header */
+.stik-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.stik-tabs button {
+  flex: 1;
+  border: none;
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stik-tabs button:hover {
+  color: var(--text);
+}
+
+.stik-tabs button.active {
+  background: var(--accent-grad);
+  color: #1a1033;
+  box-shadow: var(--accent-glow);
+}
+
+/* The community tab fills the space the editor uses and scrolls on its own */
+.stik-gallery-page {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stik-gallery-heading {
+  margin: 4px 0 0;
+  font-size: 17px;
+}
+
 .stik-gallery-item {
   position: relative;
 }

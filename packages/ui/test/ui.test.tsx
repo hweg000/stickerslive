@@ -642,7 +642,8 @@ describe("WhatsApp sticker guide", () => {
 });
 
 describe("community gallery", () => {
-  it("lists approved stickers as thumbnails, plays one on tap, and reports it", async () => {
+  it("is its own tab (#galeria): lists thumbnails, plays one on tap, reports it, and Crear comes back", async () => {
+    history.replaceState(null, "", "/");
     const report = vi.fn(async () => undefined);
     const gallery = {
       list: vi.fn(async () => [{ id: "id1", author: null, title: "Gato", createdAt: "2026-11-25T00:00:00Z" }]),
@@ -659,7 +660,14 @@ describe("community gallery", () => {
         gallery={gallery}
       />
     );
-    fireEvent.click(screen.getByTestId("open-gallery-btn"));
+    // Starts on "Crear"; the editor is there and the gallery is not
+    expect(screen.getByTestId("tab-create").getAttribute("aria-selected")).toBe("true");
+    expect(screen.queryByTestId("gallery")).toBeNull();
+    fireEvent.click(screen.getByTestId("tab-community"));
+    expect(location.hash).toBe("#galeria");
+    // The editor (sticker zone, audio bar, reset/export) is replaced by the gallery page
+    expect(screen.queryByTestId("sticker-zone")).toBeNull();
+    expect(screen.queryByTestId("export-ok-btn")).toBeNull();
     await waitFor(() => expect(screen.getByTestId("gallery-item")).toBeTruthy());
     // Only the light thumbnail loads in the grid; anonymous authors get a label
     expect(screen.getByTestId("gallery-item").querySelector("img")!.getAttribute("src")).toBe("/m/id1/thumb");
@@ -670,6 +678,20 @@ describe("community gallery", () => {
     fireEvent.click(screen.getByTestId("gallery-report"));
     await waitFor(() => expect(report).toHaveBeenCalledWith("id1"));
     await waitFor(() => expect(screen.getByTestId("gallery-report").textContent).toContain("Reportado"));
+
+    // Back to "Crear": editor returns, link cleared
+    fireEvent.click(screen.getByTestId("tab-create"));
+    expect(screen.getByTestId("sticker-zone")).toBeTruthy();
+    expect(location.hash).toBe("");
+  });
+
+  it("opens straight on the community tab from the #galeria link", () => {
+    history.replaceState(null, "", "/#galeria");
+    const gallery = { list: vi.fn(async () => []), mediaUrl: () => "", submit: vi.fn(), report: vi.fn() };
+    render(<StikSoundMinimalApp engine={createTestEngine()} shell={{ saveArtifact: vi.fn() }} initialLocale="es" gallery={gallery} />);
+    expect(screen.getByTestId("tab-community").getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByTestId("gallery")).toBeTruthy();
+    history.replaceState(null, "", "/");
   });
 
   it("publish dialog requires consent, sends name/title, and explains the daily limit", async () => {

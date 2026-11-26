@@ -99,7 +99,6 @@
   "waStep6Text": "En un chat: stickers → «Crear sticker» → elige tu video. Toca el botón de sonido (las ondas, a la derecha del todo en la barra de arriba) y elige «Conservar audio original». Envíalo: tus amigos lo verán en silencio y tocan el ícono de audio para escucharlo.",
   "waImgSoundAlt": "Barra del editor de stickers de WhatsApp; el botón de sonido es el último, a la derecha",
   "waImgTesterAlt": "Página de Google Play para unirse a la prueba de WhatsApp Messenger, con el botón azul Become a tester",
-  "galleryOpenBtn": "🌟 Ver la galería de la comunidad",
   "galleryPublishBtn": "📤 Publicar en la galería",
   "galleryTitle": "Creados por la comunidad",
   "galleryEmpty": "Todavía no hay stickers publicados. ¡Sé el primero!",
@@ -117,5 +116,7 @@
   "galleryPublishSent": "¡Enviado! Lo revisaremos antes de que aparezca en la galería.",
   "galleryPublishError": "No se pudo enviar. Revisa tu conexión e inténtalo otra vez.",
   "galleryPublishRateLimited": "Llegaste al límite de publicaciones de hoy. Inténtalo mañana.",
-  "galleryPublishTooBig": "El video pesa demasiado para la galería (máximo 5 MB). Expórtalo con el botón de 5s o con fondo Blanco/Negro (MP4) e inténtalo de nuevo."
+  "galleryPublishTooBig": "El video pesa demasiado para la galería (máximo 5 MB). Expórtalo con el botón de 5s o con fondo Blanco/Negro (MP4) e inténtalo de nuevo.",
+  "tabCreate": "✨ Crear",
+  "tabCommunity": "🌟 Comunidad"
 }

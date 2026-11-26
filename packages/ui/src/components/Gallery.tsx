@@ -151,8 +151,8 @@ export const PublishDialog = ({
   );
 };
 
-/** Approved community stickers: light thumbnails in a grid; the video loads only when opened. */
-export const GalleryBrowser = ({ client, onClose, labels }: { client: GalleryClient; onClose(): void; labels: GalleryLabels }) => {
+/** "Comunidad" tab: approved stickers as light thumbnails; the video loads only when opened. */
+export const GalleryBrowser = ({ client, labels }: { client: GalleryClient; labels: GalleryLabels }) => {
   const [items, setItems] = useState<GalleryItem[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [open, setOpen] = useState<GalleryItem | null>(null);
@@ -172,8 +172,8 @@ export const GalleryBrowser = ({ client, onClose, labels }: { client: GalleryCli
   const name = (it: GalleryItem) => it.author ?? labels.anonymous;
 
   return (
-    <Modal onClose={onClose} label={labels.title} testId="gallery">
-      <Head title={labels.title} onClose={onClose} closeLabel={labels.close} />
+    <section className="stik-gallery-page" data-testid="gallery" aria-label={labels.title}>
+      <h2 className="stik-gallery-heading">{labels.title}</h2>
       {open ? (
         <div className="stik-gallery-detail">
           <video
@@ -239,6 +239,6 @@ export const GalleryBrowser = ({ client, onClose, labels }: { client: GalleryCli
           ))}
         </div>
       )}
-    </Modal>
+    </section>
   );
 };
