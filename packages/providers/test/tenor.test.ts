@@ -8,15 +8,15 @@ function makeGif(w: number, h: number, frames: number): Uint8Array<ArrayBuffer> 
   return new Uint8Array([...head, ...Array.from({ length: frames }, () => frame).flat(), 0x3b]);
 }
 
-const img = (id: string, slug: string, alt: string) =>
-  `<img src="https://media.tenor.com/${id}AAAAM/${slug}.gif" width="180" height="180" alt="${alt}" loading="lazy">`;
+const img = (id: string, slug: string, alt: string, h = "180") =>
+  `<img src="https://media.tenor.com/${id}AAAAM/${slug}.gif" width="180" height="${h}" alt="${alt}" loading="lazy">`;
 
 const html =
   img("8pg6pKEUmT0", "egg-cat", "a cat &amp; an egg") +
   img("8pg6pKEUmT0", "egg-cat", "duplicate") +
   `<img src="https://media.tenor.com/BCQJFkjyNYwAAAAm/sticker.webp" alt="webp sticker, skipped">` +
   `<img src="https://evil.example/xAAAAM/x.gif" alt="other host, skipped">` +
-  img("DcRO1-0Kn9w", "cats-drooling", "drool");
+  img("DcRO1-0Kn9w", "cats-drooling", "drool", "238.9");
 
 describe("packages/providers Tenor GIF source", () => {
   it("extracts deduped GIF results with full-size URLs from a search page", () => {
@@ -24,12 +24,16 @@ describe("packages/providers Tenor GIF source", () => {
       {
         title: "a cat & an egg",
         preview_url: "https://media.tenor.com/8pg6pKEUmT0AAAAM/egg-cat.gif",
-        gif_url: "https://media.tenor.com/8pg6pKEUmT0AAAAd/egg-cat.gif"
+        gif_url: "https://media.tenor.com/8pg6pKEUmT0AAAAd/egg-cat.gif",
+        width: 180,
+        height: 180
       },
       {
         title: "drool",
         preview_url: "https://media.tenor.com/DcRO1-0Kn9wAAAAM/cats-drooling.gif",
-        gif_url: "https://media.tenor.com/DcRO1-0Kn9wAAAAd/cats-drooling.gif"
+        gif_url: "https://media.tenor.com/DcRO1-0Kn9wAAAAd/cats-drooling.gif",
+        width: 180,
+        height: 238.9 // tall GIF: its real shape is kept in the grid
       }
     ]);
   });

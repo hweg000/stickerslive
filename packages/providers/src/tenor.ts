@@ -7,6 +7,9 @@ export interface GifResult {
   preview_url: string;
   /** Medium GIF, the preferred size to import as the sticker. */
   gif_url: string;
+  /** Preview size from the page, so the grid can reserve the right shape before it loads. */
+  width?: number;
+  height?: number;
 }
 
 // Server-rendered results: <img src="https://media.tenor.com/<id>AAAAM/<slug>.gif" ... alt="...">.
@@ -73,7 +76,14 @@ export function extractTenorGifs(html: string): GifResult[] {
     const preview = `${m[1]}AAAAM${m[2]}`;
     if (seen.has(preview)) continue;
     seen.add(preview);
-    out.push({ title: decodeEntities(m[3] ?? "").trim(), preview_url: preview, gif_url: `${m[1]}AAAAd${m[2]}` });
+    const width = Number(/\bwidth="([\d.]+)"/.exec(m[0])?.[1]);
+    const height = Number(/\bheight="([\d.]+)"/.exec(m[0])?.[1]);
+    out.push({
+      title: decodeEntities(m[3] ?? "").trim(),
+      preview_url: preview,
+      gif_url: `${m[1]}AAAAd${m[2]}`,
+      ...(width > 0 && height > 0 ? { width, height } : {})
+    });
   }
   return out;
 }

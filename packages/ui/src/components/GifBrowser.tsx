@@ -8,6 +8,8 @@ export interface GifSearchResult {
   title: string;
   preview_url: string;
   gif_url: string;
+  width?: number;
+  height?: number;
 }
 
 export interface GifSource {
@@ -85,19 +87,28 @@ export const GifBrowser = ({ search, onPick, onClose, labels }: GifBrowserProps)
         </form>
 
         {!loading && results.length > 0 && (
-          <div className="stik-gif-grid">
-            {results.map((g) => (
-              <button
-                key={g.preview_url}
-                type="button"
-                className="stik-gif-item"
-                data-testid="gif-item"
-                title={g.title}
-                onClick={() => onPick(g)}
-              >
-                <img src={g.preview_url} alt={g.title} loading="lazy" />
-              </button>
-            ))}
+          // Scroll lives on the wrapper: a height-capped multi-column box would overflow sideways.
+          <div className="stik-gif-scroll">
+            <div className="stik-gif-grid">
+              {results.map((g) => (
+                <button
+                  key={g.preview_url}
+                  type="button"
+                  className="stik-gif-item"
+                  data-testid="gif-item"
+                  title={g.title}
+                  onClick={() => onPick(g)}
+                >
+                  <img
+                    src={g.preview_url}
+                    alt={g.title}
+                    loading="lazy"
+                    // Reserve the GIF's real shape before it loads, so the columns don't jump.
+                    style={g.width && g.height ? { aspectRatio: `${g.width} / ${g.height}` } : undefined}
+                  />
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
